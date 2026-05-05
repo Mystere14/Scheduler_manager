@@ -1,0 +1,58 @@
+# Pylint configuration for the backend project
+# Edit the values below to suit your preferences. Comments explain each option.
+
+[MASTER]
+# Python path adjustments: add project root so imports are resolved when running pylint
+# You can adapt the path if needed; keep it if pylint can't find local modules.
+init-hook="import sys, os; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))"
+# Comma-separated list of package or module names to be ignored (e.g. migrations, generated code)
+ignore=__pycache__,tests
+# Number of processes to use for parallel linting (1 to disable parallelism)
+jobs=1
+
+[MESSAGES CONTROL]
+# Disable messages you don't want to see. Common defaults below — uncomment or remove as needed.
+disable=
+    C0114,  # missing-module-docstring
+    C0115,  # missing-class-docstring
+    C0116,  # missing-function-docstring
+    R0903,  # too-few-public-methods (data containers)
+    W0511,  # fixme (TODO/FIXME)
+
+[REPORTS]
+# Disable full reports, keep concise output
+reports=no
+output-format=colorized
+
+[FORMAT]
+# Maximum line length. 
+max-line-length=200
+# Indentation string (use spaces)
+indent-string='    '
+
+[BASIC]
+# Good short names allowed without warning
+good-names=i,j,k,ex,Run,_,pk,id
+
+[DESIGN]
+# Limits for design issues — tune to your project's complexity
+max-args=10
+max-locals=25
+max-returns=6
+max-branches=12
+max-statements=50
+
+[TYPECHECK]
+# Modules which pylint should ignore when importing (if you use C-extensions or optional deps)
+ignored-modules=
+
+[SIMILARITIES]
+# Ignore comments and docstrings when computing similarities
+ignore-comments=yes
+ignore-docstrings=yes
+
+[VARIABLES]
+# Allow these names as global constants without being flagged
+additional-builtins=
+
+# End of file

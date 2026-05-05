@@ -1,0 +1,29 @@
+[project]
+name = "back"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "black>=25.11.0", # Automatic code formatter
+    "fastapi[standard]>=0.122.0", # High-performance web framework for building APIs
+    "isort>=7.0.0", # Utility to sort imports
+    "psycopg[binary]>=3.2.13", # PostgreSQL adapter (version 3)
+    "pylint>=4.0.3", # Linter for static code analysis
+    "sqlalchemy>=2.0.44", # SQL Toolkit and ORM (SQLModel base)
+    "sqlmodel>=0.0.27", # ORM combining SQLAlchemy and Pydantic
+    "uvicorn[standard]>=0.38.0", # ASGI server to run the FastAPI application
+    "httpx>=0.27.0", # Async HTTP client (for querying IoT sensors)
+    "pydantic>=2.12.4", # Data validation and settings management
+    "bcrypt>=4.0.1", # Password hashing library
+    "python-jose[cryptography]>=3.3.0", # JWT (JSON Web Tokens) management
+    "passlib[bcrypt]>=1.7.4", # Password hashing manager (high level)
+    "pytest>=7.4.0", # Unit testing framework # PostgreSQL adapter (version 2)
+    "psycopg2-binary>=2.9.6",
+    "apscheduler>=3.10.0", # Executing periodic task for the capture
+    "slowapi>=0.1.9",
+    "python-multipart>=0.0.21",
+]
+
+[tool.pylint.main]
+init-hook = "import sys, os; sys.path.append(os.path.join(os.getcwd(), '..'))"
