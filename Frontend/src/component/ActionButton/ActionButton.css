@@ -1,0 +1,28 @@
+.action-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 0.7rem;
+  border: 2px solid #10b981;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  text-align: center;
+  background: white;
+  color: #292f2d;
+  box-shadow: none;
+}
+
+.action-button:hover {
+  background: #ecfdf5;
+  border-color: #059669;
+  color: #059669;
+}
+
+
