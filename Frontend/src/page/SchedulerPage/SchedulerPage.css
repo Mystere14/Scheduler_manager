@@ -1,0 +1,218 @@
+.scheduler-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 2rem 0;
+}
+
+.scheduler-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 3rem;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  color: #333;
+}
+
+.page-header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2.5rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: #10b981;
+}
+
+.page-header p {
+  margin: 0;
+  font-size: 1rem;
+  color: #666;
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: sticky;
+  top: 2rem;
+}
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.import-area {
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.import-area:hover {
+  border-color: #999;
+  background: #fafafa;
+}
+
+.import-icon {
+  width: 48px;
+  height: 48px;
+  color: #666;
+  margin: 0 0 1rem 0;
+}
+
+.import-area p {
+  margin: 0 0 1rem 0;
+  font-weight: 500;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.file-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease;
+}
+
+.file-input:hover {
+  border-color: #999;
+}
+
+.file-info {
+  font-size: 0.75rem;
+  color: #999;
+  margin: 0;
+  text-align: center;
+}
+
+.export-options {
+  text-align: center;
+}
+
+.export-options p {
+  font-weight: 500;
+  margin: 0 0 1.5rem 0;
+  color: #333;
+}
+
+.export-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.export-buttons .btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #333;
+  background: white;
+}
+
+.export-buttons .btn:hover {
+  background: #f5f5f5;
+  border-color: #999;
+}
+
+.export-buttons .btn:active {
+  background: #eee;
+}
+
+@media (max-width: 1024px) {
+  .page-header h1 {
+    font-size: 2.2rem;
+  }
+
+  .scheduler-page {
+    padding: 0;
+  }
+
+  .scheduler-container {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .page-header p {
+    font-size: 0.95rem;
+  }
+
+  .scheduler-page {
+    padding: 1rem 0;
+  }
+
+  .scheduler-container {
+    padding: 0 0.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .main-content {
+    gap: 1rem;
+  }
+
+  .left-panel,
+  .right-panel {
+    gap: 1rem;
+  }
+
+  .scheduler-page {
+    padding: 0;
+  }
+
+  .scheduler-container {
+    padding: 1rem;
+  }
+}
+
