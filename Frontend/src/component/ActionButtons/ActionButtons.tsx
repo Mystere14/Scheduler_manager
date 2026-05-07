@@ -4,20 +4,24 @@ import './ActionButtons.css';
 interface ActionButtonsProps {
   onGenerate: () => void;
   onVoid: () => void;
+  isGenerating: boolean;
 }
 
 export const ActionButtons = ({
   onGenerate,
-  onVoid
+  onVoid,
+  isGenerating
 }: ActionButtonsProps) => {
   return (
     <div className="action-buttons">
-      <ActionButton
-        icon="⚡"
-        label="Générer une solution"
-        description="Générer une solution d'emploi du temps"
-        onClick={onGenerate}
-      />
+      {isGenerating && (
+        <ActionButton
+          icon="⚡"
+          label="Générer une solution"
+          description="Générer une solution d'emploi du temps"
+          onClick={onGenerate}
+        />
+      )}
       <ActionButton
         icon="📥"
         label="Importer les données"
