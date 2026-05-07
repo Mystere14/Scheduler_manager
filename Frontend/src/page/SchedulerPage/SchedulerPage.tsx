@@ -4,6 +4,7 @@ import { ActionButtons } from '../../component/ActionButtons/ActionButtons';
 import { FilterSection } from '../../feature/FilterSection/FilterSection';
 import { ImportedDataTable } from '../../feature/ImportedDataTable/ImportedDataTable';
 import { SolutionTable } from '../../feature/SolutionTable/SolutionTable';
+import { AbsenceInterface } from '../../feature/AbcenseInterface/AbcenseInterface';
 import './SchedulerPage.css';
 
 interface Filters {
@@ -21,6 +22,7 @@ const formatColumnName = (name: string): string => {
 export const SchedulerPage = () => {
   const [importedData, setImportedData] = useState<any[]>([]);
   const [solutionData, setSolutionData] = useState<any[]>([]);
+  const [absenceDialogOpen, setAbsenceDialogOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Get column names dynamically from data
@@ -151,8 +153,10 @@ export const SchedulerPage = () => {
       <div className="scheduler-container">
         <header className="page-header">
           <h1>Gestionnaire des emplois du temps</h1>
+          <button className="absence-button" onClick={() => setAbsenceDialogOpen(true)}>
+            Gérer les absences
+          </button>
         </header>
-
         <div className="main-content">
           <div className="controls">
             <ActionButtons
@@ -180,8 +184,9 @@ export const SchedulerPage = () => {
         type="file"
         accept=".csv"
         onChange={handleFileChange}
-        style={{ display: 'none' }}
+        className="hidden-file-input"
       />
+      <AbsenceInterface open={absenceDialogOpen} onClose={() => setAbsenceDialogOpen(false)} />
     </div>
   );
 };
