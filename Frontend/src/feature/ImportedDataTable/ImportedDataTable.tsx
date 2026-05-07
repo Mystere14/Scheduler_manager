@@ -3,40 +3,34 @@ import './ImportedDataTable.css';
 
 interface ImportedDataTableProps {
   data: Record<string, any>[];
+  columns?: string[];
 }
 
-const COLUMNS = [
-  'codeResSAE',
-  'semaine',
-  'typeEns',
-  'codeEns',
-  'volume',
-  'jour',
-  'heure',
-];
+// Format camelCase to readable text (e.g., codeResSAE -> Code Res SAE)
+const formatColumnName = (name: string): string => {
+  return name
+    .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space between lowercase and uppercase
+    .replace(/^./, (str) => str.toUpperCase()) // Capitalize first letter
+    .trim();
+};
 
-export const ImportedDataTable = ({ data }: ImportedDataTableProps) => {
+export const ImportedDataTable = ({ data, columns }: ImportedDataTableProps) => {
+  // Use provided columns or extract from data
+  const dataColumns = columns && columns.length > 0 
+    ? columns 
+    : (data.length > 0 ? Object.keys(data[0]) : []);
+
   // Format columns for display
-  const displayColumns = [
-    'Code Res SAE',
-    'Semaine',
-    'Type Ens',
-    'Code Ens',
-    'Volume',
-    'Jour',
-    'Heure',
-  ];
+  const displayColumns = dataColumns.map(col => formatColumnName(col));
 
-  // Map data from model keys to display keys
-  const formattedData = data.map((row) => ({
-    'Code Res SAE': row.codeResSAE,
-    'Semaine': row.semaine,
-    'Type Ens': row.typeEns,
-    'Code Ens': row.codeEns,
-    'Volume': row.volume,
-    'Jour': row.jour,
-    'Heure': row.heure,
-  }));
+  // Map data dynamically based on available columns
+  const formattedData = data.map((row) => {
+    const formattedRow: Record<string, any> = {};
+    dataColumns.forEach(col => {
+      formattedRow[formatColumnName(col)] = row[col];
+    });
+    return formattedRow;
+  });
 
   return (
     <div className="imported-data-table">

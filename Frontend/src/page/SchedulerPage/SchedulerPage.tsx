@@ -1,94 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
+import Papa from 'papaparse';
 import { ActionButtons } from '../../component/ActionButtons/ActionButtons';
 import { FilterSection } from '../../feature/FilterSection/FilterSection';
 import { ImportedDataTable } from '../../feature/ImportedDataTable/ImportedDataTable';
 import { SolutionTable } from '../../feature/SolutionTable/SolutionTable';
 import './SchedulerPage.css';
-
-// Mock data for initial display
-const MOCK_DATA = [
-  {
-    codeResSAE: 'SAE001',
-    semaine: 'W01',
-    typeEns: 'C',
-    codeEns: 'ENS01',
-    volume: 2,
-    jour: 'Lundi',
-    heure: 9,
-  },
-  {
-    codeResSAE: 'SAE001',
-    semaine: 'W01',
-    typeEns: 'TD',
-    codeEns: 'ENS02',
-    volume: 1,
-    jour: 'Mardi',
-    heure: 10,
-  },
-  {
-    codeResSAE: 'SAE002',
-    semaine: 'W02',
-    typeEns: 'TP',
-    codeEns: 'ENS03',
-    volume: 3,
-    jour: 'Mercredi',
-    heure: 14,
-  },
-  {
-    codeResSAE: 'SAE003',
-    semaine: 'W01',
-    typeEns: 'C',
-    codeEns: 'ENS01',
-    volume: 2,
-    jour: 'Jeudi',
-    heure: 11,
-  },
-  {
-    codeResSAE: 'SAE002',
-    semaine: 'W02',
-    typeEns: 'C',
-    codeEns: 'ENS02',
-    volume: 2,
-    jour: 'Vendredi',
-    heure: 9,
-  },
-    {
-    codeResSAE: 'SAE002',
-    semaine: 'W02',
-    typeEns: 'C',
-    codeEns: 'ENS02',
-    volume: 2,
-    jour: 'Vendredi',
-    heure: 9,
-  },
-    {
-    codeResSAE: 'SAE002',
-    semaine: 'W02',
-    typeEns: 'C',
-    codeEns: 'ENS02',
-    volume: 2,
-    jour: 'Vendredi',
-    heure: 9,
-  },
-    {
-    codeResSAE: 'SAE002',
-    semaine: 'W02',
-    typeEns: 'C',
-    codeEns: 'ENS02',
-    volume: 2,
-    jour: 'Vendredi',
-    heure: 9,
-  },
-    {
-    codeResSAE: 'SAE002',
-    semaine: 'W02',
-    typeEns: 'C',
-    codeEns: 'ENS02',
-    volume: 2,
-    jour: 'Vendredi',
-    heure: 9,
-  }
-];
 
 interface Filters {
   [key: string]: string;
@@ -103,8 +19,9 @@ const formatColumnName = (name: string): string => {
 };
 
 export const SchedulerPage = () => {
-  const [importedData, setImportedData] = useState(MOCK_DATA);
-  const [solutionData, setSolutionData] = useState<typeof MOCK_DATA>([]);
+  const [importedData, setImportedData] = useState<any[]>([]);
+  const [solutionData, setSolutionData] = useState<any[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Get column names dynamically from data
   const columnNames = importedData.length > 0 
@@ -150,14 +67,70 @@ export const SchedulerPage = () => {
     setSolutionData(filteredData);
   };
 
+  const handleExport = () => {
+    // Export filtered data as CSV using PapaParse
+    const dataToExport = solutionData.length > 0 ? solutionData : filteredData;
+    const csvString = Papa.unparse(dataToExport);
+    const blob = new Blob([csvString], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `scheduler_export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImport = () => {
+    // Trigger file input
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        const results = Papa.parse(content, { header: true, skipEmptyLines: true });
+        const data = results.data as any[];
+        
+        // Validate that data is an array
+        if (Array.isArray(data) && data.length > 0) {
+          setImportedData(data);
+          setSolutionData([]); // Reset solution data
+          
+          // Extract column names from NEW data and reset filters accordingly
+          const newColumnNames = Object.keys(data[0]);
+          const emptyFilters = newColumnNames.reduce((acc, col) => ({ ...acc, [col]: '' }), {});
+          setFilters(emptyFilters);
+        } else {
+          alert('Le fichier doit contenir des données CSV valides');
+        }
+      } catch (error) {
+        alert('Erreur lors de la lecture du fichier: ' + (error as Error).message);
+      }
+    };
+    reader.readAsText(file);
+    
+    // Reset input so same file can be selected again
+    event.target.value = '';
+  };
+
   const handleDisplaySolutionTable = () => {
         return (
         <div className="main-content">
             <div className="controls">
                 <ActionButtons
                 isGenerating={false}
-                onGenerate={handleGenerateSolution}
-                onVoid={handleClearFilters}
+                isImporting={false}
+                onGenerate={() => {}}
+                onExport={handleExport}
+                onImport={() => {}}
                 />
 
                 <FilterSection
@@ -184,8 +157,10 @@ export const SchedulerPage = () => {
           <div className="controls">
             <ActionButtons
               isGenerating={true}
+              isImporting={true}
               onGenerate={handleGenerateSolution}
-              onVoid={handleClearFilters}
+              onExport={handleExport}
+              onImport={handleImport}
             />
 
             <FilterSection
@@ -196,11 +171,17 @@ export const SchedulerPage = () => {
               formatLabel={formatColumnName}
             />
         </div>
-
-          <ImportedDataTable data={filteredData} />
+          <ImportedDataTable data={filteredData} columns={columnNames} key={columnNames.join(',')} />
           {solutionData.length > 0 && handleDisplaySolutionTable()}
         </div>
       </div>
+      <input // Hidden file input for importing data to ensure security access to file 
+        ref={fileInputRef}
+        type="file"
+        accept=".csv"
+        onChange={handleFileChange}
+        style={{ display: 'none' }}
+      />
     </div>
   );
 };
