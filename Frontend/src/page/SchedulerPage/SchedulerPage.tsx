@@ -91,49 +91,47 @@ const MOCK_DATA = [
 ];
 
 interface Filters {
-  codeResSAE: string;
-  semaine: string;
-  typeEns: string;
-  codeEns: string;
-  volume: string;
+  [key: string]: string;
 }
+
+// Format camelCase to readable text (e.g., codeResSAE -> Code Res SAE)
+const formatColumnName = (name: string): string => {
+  return name
+    .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space between lowercase and uppercase
+    .replace(/^./, (str) => str.toUpperCase()) // Capitalize first letter
+    .trim();
+};
 
 export const SchedulerPage = () => {
   const [importedData, setImportedData] = useState(MOCK_DATA);
   const [solutionData, setSolutionData] = useState<typeof MOCK_DATA>([]);
-  const [filters, setFilters] = useState<Filters>({
-    codeResSAE: '',
-    semaine: '',
-    typeEns: '',
-    codeEns: '',
-    volume: '',
-  });
+  
+  // Get column names dynamically from data
+  const columnNames = importedData.length > 0 
+    ? Object.keys(importedData[0]) 
+    : [];
+  
+  // Initialize filters dynamically based on columns
+  const [filters, setFilters] = useState<Filters>(
+    columnNames.reduce((acc, col) => ({ ...acc, [col]: '' }), {})
+  );
 
   // Filter imported data based on filter values
   const filteredData = useMemo(() => {
     return importedData.filter((row) => {
-      return (
-        (filters.codeResSAE === '' ||
-          row.codeResSAE
-            .toLowerCase()
-            .includes(filters.codeResSAE.toLowerCase())) &&
-        (filters.semaine === '' ||
-          row.semaine
-            .toLowerCase()
-            .includes(filters.semaine.toLowerCase())) &&
-        (filters.typeEns === '' ||
-          row.typeEns
-            .toLowerCase()
-            .includes(filters.typeEns.toLowerCase())) &&
-        (filters.codeEns === '' ||
-          row.codeEns
-            .toLowerCase()
-            .includes(filters.codeEns.toLowerCase())) &&
-        (filters.volume === '' ||
-          row.volume.toString().includes(filters.volume.toLowerCase()))
-      );
+      return columnNames.every((col) => {
+        const filterValue = filters[col];
+        const rowValue = (row as Record<string, any>)[col];
+        
+        if (filterValue === '') return true;
+        
+        return rowValue
+          .toString()
+          .toLowerCase()
+          .includes(filterValue.toLowerCase());
+      });
     });
-  }, [importedData, filters]);
+  }, [importedData, filters, columnNames]);
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({
@@ -143,19 +141,37 @@ export const SchedulerPage = () => {
   };
 
   const handleClearFilters = () => {
-    setFilters({
-      codeResSAE: '',
-      semaine: '',
-      typeEns: '',
-      codeEns: '',
-      volume: '',
-    });
+    const emptyFilters = columnNames.reduce((acc, col) => ({ ...acc, [col]: '' }), {});
+    setFilters(emptyFilters);
   };
 
   const handleGenerateSolution = () => {
-    // Copy filtered data to solution table
+    // Copy filtered data to solution table, removing volume column
     setSolutionData(filteredData);
   };
+
+  const handleDisplaySolutionTable = () => {
+        return (
+        <div className="main-content">
+            <div className="controls">
+                <ActionButtons
+                isGenerating={false}
+                onGenerate={handleGenerateSolution}
+                onVoid={handleClearFilters}
+                />
+
+                <FilterSection
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                onClearFilters={handleClearFilters}
+                columns={columnNames}
+                formatLabel={formatColumnName}
+                />
+            </div>
+            <SolutionTable data={solutionData} columns={columnNames} />
+        </div>
+        );
+    }
 
   return (
     <div className="scheduler-page">
@@ -167,6 +183,7 @@ export const SchedulerPage = () => {
         <div className="main-content">
           <div className="controls">
             <ActionButtons
+              isGenerating={true}
               onGenerate={handleGenerateSolution}
               onVoid={handleClearFilters}
             />
@@ -175,11 +192,13 @@ export const SchedulerPage = () => {
               filters={filters}
               onFilterChange={handleFilterChange}
               onClearFilters={handleClearFilters}
+              columns={columnNames}
+              formatLabel={formatColumnName}
             />
         </div>
 
           <ImportedDataTable data={filteredData} />
-          {solutionData.length > 0 && <SolutionTable data={solutionData} />}
+          {solutionData.length > 0 && handleDisplaySolutionTable()}
         </div>
       </div>
     </div>

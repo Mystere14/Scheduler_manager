@@ -2,29 +2,25 @@ import { FilterInput } from '../../component/FilterInput/FilterInput';
 import './FilterSection.css';
 
 interface FilterSectionProps {
-  filters: {
-    codeResSAE: string;
-    semaine: string;
-    typeEns: string;
-    codeEns: string;
-    volume: string;
-  };
+  filters: Record<string, string>;
   onFilterChange: (key: string, value: string) => void;
   onClearFilters: () => void;
+  columns?: string[];
+  formatLabel?: (label: string) => string;
 }
 
 export const FilterSection = ({
   filters,
   onFilterChange,
   onClearFilters,
+  columns = [],
+  formatLabel = (label) => label,
 }: FilterSectionProps) => {
-  const filterKeys = [
-    { key: 'codeResSAE', label: 'Code Res SAE' },
-    { key: 'semaine', label: 'Semaine' },
-    { key: 'typeEns', label: 'Type Ens' },
-    { key: 'codeEns', label: 'Code Ens' },
-    { key: 'volume', label: 'Volume' },
-  ];
+  // Create filter keys from columns dynamically
+  const filterKeys = columns.map((col) => ({
+    key: col,
+    label: formatLabel(col),
+  }));
 
   return (
     <div className="filter-section">
@@ -39,9 +35,7 @@ export const FilterSection = ({
           <FilterInput
             key={key}
             label={label}
-            value={
-              filters[key as keyof typeof filters] || ''
-            }
+            value={filters[key] || ''}
             onChange={(value) => onFilterChange(key, value)}
           />
         ))}
