@@ -6,6 +6,7 @@ import { ImportedDataTable } from '../../feature/ImportedDataTable/ImportedDataT
 import { SolutionTable } from '../../feature/SolutionTable/SolutionTable';
 import { AbsenceInterface } from '../../feature/AbcenseInterface/AbcenseInterface';
 import './SchedulerPage.css';
+import api from '../../services/api';
 
 interface Filters {
   [key: string]: string;
@@ -24,12 +25,12 @@ export const SchedulerPage = () => {
   const [solutionData, setSolutionData] = useState<any[]>([]);
   const [absenceDialogOpen, setAbsenceDialogOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   // Get column names dynamically from data
-  const columnNames = importedData.length > 0 
-    ? Object.keys(importedData[0]) 
+  const columnNames = importedData.length > 0
+    ? Object.keys(importedData[0])
     : [];
-  
+
   // Initialize filters dynamically based on columns
   const [filters, setFilters] = useState<Filters>(
     columnNames.reduce((acc, col) => ({ ...acc, [col]: '' }), {})
@@ -41,9 +42,9 @@ export const SchedulerPage = () => {
       return columnNames.every((col) => {
         const filterValue = filters[col];
         const rowValue = (row as Record<string, any>)[col];
-        
+
         if (filterValue === '') return true;
-        
+
         return rowValue
           .toString()
           .toLowerCase()
@@ -85,9 +86,43 @@ export const SchedulerPage = () => {
     URL.revokeObjectURL(url);
   };
 
+  const handleSetDatabase = async (rows: any[]) => {
+  let res;
+  api.deleteInputCours();
+  try {
+    for (const row of rows) {
+      const data = {
+        code_res_sae: row.code_res_sae as string,
+        semaine: row.semaine as string,
+        type_ens: row.type_ens as string,
+        code_ens: row.code_ens as string,
+        volume: Number(row.volume),
+      };
+
+      console.log("SENDING:", data);
+
+      res = await api.createInputCours(data);
+
+      console.log("RESPONSE:", res);
+    }
+  } catch (error) {
+    alert(
+      'Erreur lors de l’insertion des données : ' +
+      (error as Error).message +
+      'Here s the problematic data:\n' + JSON.stringify(rows)
+    );
+
+    console.log(      'Erreur lors de l’insertion des données : ' +
+      (error as Error).message +
+      'Here s the problematic data:\n' + JSON.stringify(rows));
+  }
+
+  console.log("Final response:", res);
+};
+
   const handleImport = () => {
-    // Trigger file input
     fileInputRef.current?.click();
+
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,16 +135,17 @@ export const SchedulerPage = () => {
         const content = e.target?.result as string;
         const results = Papa.parse(content, { header: true, skipEmptyLines: true });
         const data = results.data as any[];
-        
-        // Validate that data is an array
+
+
         if (Array.isArray(data) && data.length > 0) {
           setImportedData(data);
-          setSolutionData([]); // Reset solution data
+          setSolutionData([]);
           
-          // Extract column names from NEW data and reset filters accordingly
+
           const newColumnNames = Object.keys(data[0]);
           const emptyFilters = newColumnNames.reduce((acc, col) => ({ ...acc, [col]: '' }), {});
           setFilters(emptyFilters);
+          handleSetDatabase(data);  
         } else {
           alert('Le fichier doit contenir des données CSV valides');
         }
@@ -118,67 +154,88 @@ export const SchedulerPage = () => {
       }
     };
     reader.readAsText(file);
-    
+
     // Reset input so same file can be selected again
     event.target.value = '';
   };
 
   const handleDisplaySolutionTable = () => {
-        return (
-        <div className="main-content">
-            <div className="controls">
-                <ActionButtons
-                isGenerating={false}
-                isImporting={false}
-                onGenerate={() => {}}
-                onExport={handleExport}
-                onImport={() => {}}
-                />
+    return (
+      <div className="main-content">
+        <div className="controls">
+          <ActionButtons
+            isGenerating={false}
+            isImporting={false}
+            onGenerate={() => { }}
+            onExport={handleExport}
+            onImport={() => { }}
+          />
 
-                <FilterSection
-                filters={filters}
-                onFilterChange={handleFilterChange}
-                onClearFilters={handleClearFilters}
-                columns={columnNames}
-                formatLabel={formatColumnName}
-                />
-            </div>
-            <SolutionTable data={solutionData} columns={columnNames} />
+          <FilterSection
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onClearFilters={handleClearFilters}
+            columns={columnNames}
+            formatLabel={formatColumnName}
+          />
         </div>
-        );
-    }
+        <SolutionTable data={solutionData} columns={columnNames} />
+      </div>
+    );
+  }
 
   return (
     <div className="scheduler-page">
       <div className="scheduler-container">
         <header className="page-header">
           <h1>Gestionnaire des emplois du temps</h1>
-          <button className="absence-button" onClick={() => setAbsenceDialogOpen(true)}>
-            Gérer les absences
-          </button>
+          {importedData.length === 0 || (
+            <button className="absence-button" onClick={() => setAbsenceDialogOpen(true)}>
+              Gérer les absences
+            </button>)}
         </header>
-        <div className="main-content">
-          <div className="controls">
-            <ActionButtons
-              isGenerating={true}
-              isImporting={true}
-              onGenerate={handleGenerateSolution}
-              onExport={handleExport}
-              onImport={handleImport}
-            />
 
-            <FilterSection
-              filters={filters}
-              onFilterChange={handleFilterChange}
-              onClearFilters={handleClearFilters}
-              columns={columnNames}
-              formatLabel={formatColumnName}
-            />
-        </div>
-          <ImportedDataTable data={filteredData} columns={columnNames} key={columnNames.join(',')} />
-          {solutionData.length > 0 && handleDisplaySolutionTable()}
-        </div>
+        {importedData.length === 0 ? (
+          <div className="empty-state">
+            <div className="csv-instructions">
+              <p>Veuillez importer un fichier CSV avec ces colonnes</p>
+              code_res_sae<br />
+              semaine<br />
+              type_ens<br />
+              code_ens<br />
+              volume<br />
+            </div>
+            <button className="import-button-large" onClick={handleImport}>
+              Importer les données
+            </button>
+          </div>
+        ) : (
+          <div className="main-content">
+            <div className="controls">
+              <ActionButtons
+                isGenerating={true}
+                isImporting={true}
+                onGenerate={handleGenerateSolution}
+                onExport={handleExport}
+                onImport={handleImport}
+              />
+
+              <FilterSection
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                onClearFilters={handleClearFilters}
+                columns={columnNames}
+                formatLabel={formatColumnName}
+              />
+            </div>
+            <ImportedDataTable data={filteredData} columns={columnNames} key={columnNames.join(',')} />
+            {solutionData.length > 0 && handleDisplaySolutionTable()}
+          </div>
+        )}
       </div>
+
+
+
       <input // Hidden file input for importing data to ensure security access to file 
         ref={fileInputRef}
         type="file"

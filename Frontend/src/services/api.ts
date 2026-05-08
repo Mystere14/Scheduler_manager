@@ -3,8 +3,8 @@
 
 const BASE_URL = 'http://localhost:8000';
 
-async function request(path, options = {}) {
-  const headers = {
+async function request(path: string, options: RequestInit = {}) {
+  const headers: Record<string, any> = {
     'Content-Type': 'application/json',
     ...(options.headers || {})
   };
@@ -14,23 +14,17 @@ async function request(path, options = {}) {
     ...options,
     headers,
   });
-  if (res.status === 204) return [];
 
-  let data;
-  try {
-    data = await res.json();
-  } catch (_e) {
-    data = [];
-  }
+  const text = await res.text(); // 🔥 toujours lire brut
 
   if (!res.ok) {
-    const message = typeof data === 'object' && data && data.detail ? data.detail : JSON.stringify(data);
-    const error = new Error(`API ${res.status}: ${message}`);
-    error.status = res.status;
-    error.payload = data;
-    throw error;
+    throw new Error(`API ${res.status}: ${text}`);
   }
-  return data;
+
+  // si pas de body
+  if (!text) return null;
+
+  return JSON.parse(text);
 }
 
 export { request };
@@ -40,22 +34,22 @@ export default {
   getCodeEns() {
     return request('/code_ens/');
   },
-  getCodeEnsById(code) {
+  getCodeEnsById(code: string) {
     return request(`/code_ens/${encodeURIComponent(code)}`);
   },
-  createCodeEns(codeEnsData) {
+  createCodeEns(codeEnsData: any) {
     return request('/code_ens/', {
       method: 'POST',
       body: JSON.stringify(codeEnsData),
     });
   },
-  updateCodeEns(code, codeEnsData) {
+  updateCodeEns(code: string, codeEnsData: any) {
     return request(`/code_ens/${encodeURIComponent(code)}`, {
       method: 'PUT',
       body: JSON.stringify(codeEnsData),
     });
   },
-  deleteCodeEns(code) {
+  deleteCodeEns(code: string) {
     return request(`/code_ens/${encodeURIComponent(code)}`, {
       method: 'DELETE',
     });
@@ -65,45 +59,71 @@ export default {
   getCours() {
     return request('/cours/');
   },
-  getCoursByTeacher(teacher) {
+  getCoursByTeacher(teacher: string) {
     return request(`/cours/teacher/${encodeURIComponent(teacher)}`);
   },
-  createCours(coursData) {
+  createCours(coursData: any) {
     return request('/cours/', {
       method: 'POST',
       body: JSON.stringify(coursData),
     });
   },
-  updateCours(id, coursData) {
+  updateCours(id: string, coursData: any) {
     return request(`/cours/${id}`, {
       method: 'PUT',
       body: JSON.stringify(coursData),
     });
   },
-  deleteCours(id) {
+  deleteCours(id: string) {
     return request(`/cours/${id}`, {
       method: 'DELETE',
     });
   },
 
+  // ===== Input_cours (Input Courses) =====
+  getInputCours() {
+    return request('/input_cours/');
+  },
+  createInputCours(inputCoursData: any) {
+    return request('/input_cours/', {
+      method: 'POST',
+      body: JSON.stringify(inputCoursData),
+    });
+  },
+  updateInputCours(id: string, inputCoursData: any) {
+    return request(`/input_cours/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(inputCoursData),
+    });
+  },
+  deleteInputCoursById(id: string) {
+    return request(`/input_cours/${id}`, {
+      method: 'DELETE',
+    });
+  },
+  deleteInputCours() {
+    return request('/input_cours/', {
+      method: 'DELETE',
+    });
+  },
   // ===== Absence (Absences) =====
 
-  getAbsenceByEnseignant(enseignant) {
+  getAbsenceByEnseignant(enseignant: string) {
     return request(`/absences/teacher/${encodeURIComponent(enseignant)}`);
   },
-  createAbsence(absenceData) {
+  createAbsence(absenceData: any) {
     return request('/absences/', {
       method: 'POST',
       body: JSON.stringify(absenceData),
     });
   },
-  updateAbsence(id, absenceData) {
+  updateAbsence(id: string, absenceData: any) {
     return request(`/absences/${id}`, {
       method: 'PUT',
       body: JSON.stringify(absenceData),
     });
   },
-  deleteAbsence(id) {
+  deleteAbsence(id: string) {
     return request(`/absences/${id}`, {
       method: 'DELETE',
     });

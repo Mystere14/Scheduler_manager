@@ -3,9 +3,12 @@ Database configuration and session management.
 """
 import logging
 
+
 from sqlalchemy import create_engine
 from sqlmodel import Session, SQLModel
 from config import settings
+
+import models 
 
 logger = logging.getLogger(__name__)
 

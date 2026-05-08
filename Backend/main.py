@@ -1,6 +1,7 @@
 import os
 import sys
 
+from routes import input_cours
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from sqlmodel import create_engine
@@ -65,6 +66,7 @@ app.add_middleware(
 app.include_router(absence.router)
 app.include_router(cours.router)
 app.include_router(code_ens.router)
+app.include_router(input_cours.router)
 
 
 @app.get("/")

@@ -45,6 +45,48 @@ class Code_ensUpdate(SQLModel):
     """
     code: Optional[str] = Field(None, min_length=1, max_length=5)
 
+class Input_cours(SQLModel, table=True):
+    """
+    input data table sent from csv
+    """
+    __tablename__ = "input_cours"
+    id: Optional[int] = Field(default=None, primary_key=True)
+    code_res_sae: str
+    semaine: str
+    type_ens: str
+    code_ens: str 
+    volume: float
+
+class Input_coursRead(SQLModel):
+    """
+    input_cours data read schema
+    """
+    code_res_sae: str
+    semaine: str
+    type_ens: str
+    code_ens: str
+    volume: float
+
+class Input_coursCreate(SQLModel):
+    """
+    input_cours data creation schema
+    """
+    code_res_sae: str
+    semaine: str
+    type_ens: str
+    code_ens: str
+    volume: float
+
+class Input_coursUpdate(SQLModel):
+    """
+    input_cours update schema
+    """
+    code_res_sae: Optional[str] = None
+    semaine: Optional[str] = None
+    type_ens: Optional[str] = None
+    code_ens: Optional[str] = None
+    volume: Optional[float] = None
+
 
 class Cours(SQLModel, table=True):
     """
@@ -56,7 +98,7 @@ class Cours(SQLModel, table=True):
     semaine: str
     type_ens: Type_ens
     code_ens: str = Field(foreign_key="Code_ens.code")
-    volume: int
+    volume: float
     jour: str
     heure: int
 
@@ -69,7 +111,7 @@ class CoursCreate(SQLModel):
     semaine: str
     type_ens: Type_ens
     code_ens: str
-    volume: int
+    volume: float
     jour: str
     heure: int
 
@@ -83,7 +125,7 @@ class CoursRead(SQLModel):
     semaine: str
     type_ens: Type_ens
     code_ens: str
-    volume: int
+    volume: float
     jour: str
     heure: int
 
@@ -95,7 +137,7 @@ class CoursUpdate(SQLModel):
     code_res_sae: Optional[str] = None
     semaine: Optional[str] = None
     type_ens: Optional[Type_ens] = None
-    volume: Optional[int] = None
+    volume: Optional[float] = None
     jour: Optional[str] = None
     heure: Optional[int] = None
 
@@ -107,8 +149,8 @@ class Absence(SQLModel, table=True):
     __tablename__ = "absence"
     id: Optional[int] = Field(default=None, primary_key=True)
     enseignant: str = Field(foreign_key="Code_ens.code")
-    heure_debut: int
-    heure_fin: int
+    heure_debut: float
+    heure_fin: float
     jour: str
     description: Optional[str] = None
 
@@ -118,8 +160,8 @@ class AbsenceRead(SQLModel):
     """
     id: int
     enseignant: str
-    heure_debut: int
-    heure_fin: int
+    heure_debut: float
+    heure_fin: float
     jour: str
     description: Optional[str] = None 
 
@@ -128,8 +170,8 @@ class AbsenceCreate(SQLModel):
     Absence creation schema
     """
     enseignant: str
-    heure_debut: int
-    heure_fin: int
+    heure_debut: float
+    heure_fin: float
     jour: str
     description: Optional[str] = None
 
@@ -137,7 +179,7 @@ class AbsenceUpdate(SQLModel):
     """
     Absence update schema
     """
-    heure_debut: Optional[int] = None
-    heure_fin: Optional[int] = None
+    heure_debut: Optional[float] = None
+    heure_fin: Optional[float] = None
     jour: Optional[str] = None
     description: Optional[str] = None

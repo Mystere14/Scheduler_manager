@@ -16,7 +16,6 @@ export const FilterSection = ({
   columns = [],
   formatLabel = (label) => label,
 }: FilterSectionProps) => {
-  // Create filter keys from columns dynamically
   const filterKeys = columns.map((col) => ({
     key: col,
     label: formatLabel(col),
