@@ -99,11 +99,7 @@ export const SchedulerPage = () => {
         volume: Number(row.volume),
       };
 
-      console.log("SENDING:", data);
-
       res = await api.createInputCours(data);
-
-      console.log("RESPONSE:", res);
     }
   } catch (error) {
     alert(
@@ -111,10 +107,6 @@ export const SchedulerPage = () => {
       (error as Error).message +
       'Here s the problematic data:\n' + JSON.stringify(rows)
     );
-
-    console.log(      'Erreur lors de l’insertion des données : ' +
-      (error as Error).message +
-      'Here s the problematic data:\n' + JSON.stringify(rows));
   }
 
   console.log("Final response:", res);
@@ -162,7 +154,7 @@ export const SchedulerPage = () => {
   const handleDisplaySolutionTable = () => {
     return (
       <div className="main-content">
-        <div className="controls">
+        <div className="controls" id="solution-controls">
           <ActionButtons
             isGenerating={false}
             isImporting={false}
@@ -218,6 +210,7 @@ export const SchedulerPage = () => {
                 onGenerate={handleGenerateSolution}
                 onExport={handleExport}
                 onImport={handleImport}
+                href="#solution-controls"
               />
 
               <FilterSection

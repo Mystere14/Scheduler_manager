@@ -7,6 +7,7 @@ interface ActionButtonsProps {
     onImport: () => void;
     isGenerating: boolean;
     isImporting: boolean;
+    href?: string;
 }
 
 export const ActionButtons = ({
@@ -14,7 +15,8 @@ export const ActionButtons = ({
     onExport,
     onImport,
     isGenerating,
-    isImporting
+    isImporting,
+    href
 }: ActionButtonsProps) => {
     return (
         <div className="action-buttons">
@@ -24,6 +26,7 @@ export const ActionButtons = ({
                     label="Générer une solution"
                     description="Générer une solution d'emploi du temps"
                     onClick={onGenerate}
+                    href={href}
                 />
             )}
             {isImporting && (
