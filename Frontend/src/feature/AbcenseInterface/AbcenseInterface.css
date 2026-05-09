@@ -27,3 +27,32 @@
   padding: 1rem;
   border-top: 1px solid #e0e0e0;
 }
+
+.closeButton,
+.addAbcenseButton {
+  color: #059669 !important;
+  padding: 1rem 1.5rem !important;
+  border: 2px solid transparent !important;
+}
+
+.closeButton:hover,
+.closeButton:focus,
+.closeButton:active,
+.addAbcenseButton:hover,
+.addAbcenseButton:focus,
+.addAbcenseButton:active {
+  border: 2px solid #059669 !important;
+  color: #059669 !important;
+  background-color: #ecfdf5 !important; 
+}
+
+.addAbcenseButton .MuiTouchRipple-root {
+  display: none !important;
+}
+
+.addAbcenseButton::before,
+.addAbcenseButton::after {
+  display: none !important;
+  background-color: transparent !important;
+  opacity: 0 !important;
+}

@@ -23,6 +23,11 @@
   justify-content: flex-end;
 }
 
+.eraseSelection
+{
+    color: #059669 !important;
+}
+
 /* Override react-day-picker styles */
 :global(.rdp) {
   font-size: 0.9rem;
@@ -42,4 +47,50 @@
   font-size: 0.85rem;
   height: 2rem;
   width: 2rem;
+}
+
+/* Style pour les dates sélectionnées */
+.my-selected-date {
+  background-color: #059669 !important;
+  border-radius: 50% !important;
+  color: white !important;
+  font-weight: bold;
+}
+
+/* Style pour le jour actuel (aujourd'hui) */
+.my-today-date {
+  color: #059669;
+  font-weight: bold;
+}
+
+.rdp-nav_button {
+  color: #059669 !important; /* Votre couleur verte */
+}
+
+.rdp-nav_button:hover {
+  background-color: #e6f8f1 !important; /* Un vert très clair */
+}
+
+.rdp-nav_button svg {
+  fill: #059669; 
+}
+
+/* Style pour les TextFields MUI */
+.green-textfield label.Mui-focused {
+  color: #059669 !important;
+}
+
+.green-textfield .MuiOutlinedInput-root:hover fieldset {
+  border-color: #059669 !important;
+}
+
+.green-textfield .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #059669 !important;
+}
+
+/* BONUS : Pour colorier la petite icône d'horloge native du navigateur (qui est noire par défaut) */
+.green-textfield input[type="time"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  /* Ce filtre convertit l'icône noire en un vert proche de votre #059669 */
+  filter: invert(41%) sepia(85%) saturate(464%) hue-rotate(113deg) brightness(93%) contrast(94%);
 }

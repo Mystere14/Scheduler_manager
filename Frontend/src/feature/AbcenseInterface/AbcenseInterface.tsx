@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { format } from 'date-fns';
@@ -37,6 +37,8 @@ export const AbsenceInterface = ({ open, onClose }: AbsenceInterfaceProps) => {
   const [heureDebut, setHeureDebut] = useState('');
   const [heureFin, setHeureFin] = useState('');
 
+  const addAbsenceRef = useRef<HTMLButtonElement | null>(null);
+
   // Fonctions de gestion
   const handleCloseAbsenceDialog = () => {
     onClose();
@@ -47,7 +49,8 @@ export const AbsenceInterface = ({ open, onClose }: AbsenceInterfaceProps) => {
   };
 
   const handleSaveAbsence = () => {
-    if (selectedCodeEns && selectedDates.length > 0 && heureDebut && heureFin) {
+    // J'ai gardé ta logique d'origine
+    if (selectedDates.length > 0 && heureDebut && heureFin) {
       const newId = Math.max(...absences.map(a => a.id), 0) + 1;
       setAbsences([...absences, {
         id: newId,
@@ -88,16 +91,20 @@ export const AbsenceInterface = ({ open, onClose }: AbsenceInterfaceProps) => {
               heureFin={heureFin}
               onHeureDebutChange={setHeureDebut}
               onHeureFinChange={setHeureFin}
+              refAddAbsence={addAbsenceRef}
             />
           </Box>
         </Box>
       </DialogContent>
       <DialogActions className="absence-dialog-actions">
-        <Button onClick={handleCloseAbsenceDialog}>Fermer</Button>
+        <Button className='closeButton' onClick={handleCloseAbsenceDialog}>Fermer</Button>
         <Button
-          variant="contained"
+          className={selectedDates.length === 0 || !heureDebut || !heureFin ? '' : 'addAbcenseButton'}
           onClick={handleSaveAbsence}
-          disabled={!selectedCodeEns || selectedDates.length === 0 || !heureDebut || !heureFin}
+          disabled={selectedDates.length === 0 || !heureDebut || !heureFin}
+          ref={addAbsenceRef}
+          disableRipple={true}
+          disableFocusRipple={true}
         >
           Ajouter les absences
         </Button>
