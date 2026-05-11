@@ -72,7 +72,26 @@
 }
 
 .rdp-nav_button svg {
-  fill: #059669; 
+  fill: #059669;
+  color: #059669;
+  stroke: none;
+  cursor: pointer;
+  display: block;
+  position: relative;
+  pointer-events: none;
+}
+
+.chevron-left {
+  left: -4px;
+}
+
+.chevron-right {
+  right: -4px;
+}
+
+.chevron-disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 /* Style pour les TextFields MUI */
