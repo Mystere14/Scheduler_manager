@@ -45,6 +45,30 @@ export const Calendar = ({ selectedDates, onSelectDates }: CalendarProps) => {
     return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
   };
 
+  const handleSelectAllDays = () => {
+    // Déterminer le mois/année actuel
+    const now = selectedDates[0] || new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    
+    // Générer tous les jours du mois
+    const allDaysOfMonth: Date[] = [];
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+      allDaysOfMonth.push(new Date(year, month, day));
+    }
+    
+    // Fusionner avec les jours sélectionnés (éviter les doublons)
+    const existingKeys = new Set(selectedDates.map(d => getDateKey(d)));
+    const newDates = [
+      ...selectedDates,
+      ...allDaysOfMonth.filter(d => !existingKeys.has(getDateKey(d)))
+    ];
+    
+    onSelectDates(newDates);
+  };
+
   const handleMouseDown = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).tagName === 'BUTTON') {
       setIsDragging(true);
@@ -185,6 +209,13 @@ export const Calendar = ({ selectedDates, onSelectDates }: CalendarProps) => {
   }}
 />
         <Box className="calendar-actions">
+          <Button
+            size="small"
+            onClick={handleSelectAllDays}
+            className='eraseSelection'
+          >
+            Sélectionner tout
+          </Button>
           <Button
             size="small"
             onClick={() => onSelectDates([])}
