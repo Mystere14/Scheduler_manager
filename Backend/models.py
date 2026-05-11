@@ -1,6 +1,7 @@
 """
 Data models for the application.
 """
+from datetime import date
 from enum import Enum
 from typing import Optional
 
@@ -151,7 +152,7 @@ class Absence(SQLModel, table=True):
     enseignant: str = Field(foreign_key="Code_ens.code")
     heure_debut: float
     heure_fin: float
-    jour: str
+    jour: date 
     description: Optional[str] = None
 
 class AbsenceRead(SQLModel):
@@ -162,7 +163,7 @@ class AbsenceRead(SQLModel):
     enseignant: str
     heure_debut: float
     heure_fin: float
-    jour: str
+    jour: date
     description: Optional[str] = None 
 
 class AbsenceCreate(SQLModel):
@@ -172,7 +173,7 @@ class AbsenceCreate(SQLModel):
     enseignant: str
     heure_debut: float
     heure_fin: float
-    jour: str
+    jour: date = Field(default_factory=date.today)
     description: Optional[str] = None
 
 class AbsenceUpdate(SQLModel):
@@ -181,5 +182,5 @@ class AbsenceUpdate(SQLModel):
     """
     heure_debut: Optional[float] = None
     heure_fin: Optional[float] = None
-    jour: Optional[str] = None
+    jour: Optional[date] = None
     description: Optional[str] = None
