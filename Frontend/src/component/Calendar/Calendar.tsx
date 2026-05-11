@@ -70,9 +70,16 @@ export const Calendar = ({ selectedDates, onSelectDates }: CalendarProps) => {
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).tagName === 'BUTTON') {
-      setIsDragging(true);
-      setDraggedDays(new Set());
+    const target = e.target as HTMLElement;
+    const clickedButton = target.tagName === 'BUTTON' ? target : target.closest('button');
+    
+    if (clickedButton) {
+      const dayNum = clickedButton.textContent?.trim();
+      if (dayNum && !isNaN(Number(dayNum)) && Number(dayNum) > 0 && Number(dayNum) <= 31) {
+        e.stopPropagation();
+        setIsDragging(true);
+        setDraggedDays(new Set());
+      }
     }
   };
 
@@ -189,7 +196,12 @@ export const Calendar = ({ selectedDates, onSelectDates }: CalendarProps) => {
             color: greenColor,
             stroke: 'none',
             opacity: disabled ? 0.3 : 1, 
-            cursor: disabled ? 'default' : 'pointer'
+            cursor: disabled ? 'default' : 'pointer',
+            display: 'block',
+            position: 'relative',
+            left: orientation === 'left' ? '-4px' : undefined,
+            right: orientation === 'right' ? '-4px' : undefined,
+            pointerEvents: 'none'
           }}
         >
           <path d={path} />
