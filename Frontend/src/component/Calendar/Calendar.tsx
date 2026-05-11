@@ -14,42 +14,17 @@ interface CalendarProps {
 export const Calendar = ({ selectedDates, onSelectDates }: CalendarProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [draggedDays, setDraggedDays] = useState<Set<string>>(new Set());
+  const [displayedMonth, setDisplayedMonth] = useState<Date>(new Date());
   const calendarRef = useRef<HTMLDivElement>(null);
-
-  const extractDateFromButton = (button: HTMLElement): Date | null => {
-    try {
-      // Les boutons de jours de DayPicker ont un aria-label au format: "lundi 1 janvier 2024"
-      const ariaLabel = button.getAttribute('aria-label');
-      if (!ariaLabel) return null;
-
-      // Chercher si le bouton a un attribut data qui contient la date
-      // Alternatively, essayer de parser depuis le contenu texte
-      const dayText = button.textContent?.trim();
-      if (!dayText) return null;
-
-      // On peut aussi chercher les data attributes
-      for (let i = 0; i < button.attributes.length; i++) {
-        const attr = button.attributes[i];
-        if (attr.name.startsWith('data-')) {
-          console.log(`${attr.name}: ${attr.value}`);
-        }
-      }
-
-      return null;
-    } catch (error) {
-      return null;
-    }
-  };
 
   const getDateKey = (date: Date): string => {
     return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
   };
 
   const handleSelectAllDays = () => {
-    // Déterminer le mois/année actuel
-    const now = selectedDates[0] || new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth();
+    // Utiliser le mois affiché du calendrier
+    const year = displayedMonth.getFullYear();
+    const month = displayedMonth.getMonth();
     
     // Générer tous les jours du mois
     const allDaysOfMonth: Date[] = [];
@@ -103,37 +78,33 @@ export const Calendar = ({ selectedDates, onSelectDates }: CalendarProps) => {
       const dayNum = dayButton.textContent?.trim();
       if (dayNum && !isNaN(Number(dayNum)) && Number(dayNum) > 0 && Number(dayNum) <= 31) {
         try {
-          const monthTable = dayButton.closest('table');
-          if (monthTable) {
-            const dateToToggle = new Date(selectedDates[0]?.getFullYear() || new Date().getFullYear(), 
-                                          selectedDates[0]?.getMonth() || new Date().getMonth(),
-                                          Number(dayNum));
+          // Utiliser le mois affiché du calendrier
+          const dateToToggle = new Date(displayedMonth.getFullYear(), displayedMonth.getMonth(), Number(dayNum));
+          
+          const dateKey = getDateKey(dateToToggle);
+          
+          // Ne traiter le jour que si on ne l'a pas déjà modifié pendant ce drag
+          if (!draggedDays.has(dateKey)) {
+            // Vérifier si la date existe
+            const dateExists = selectedDates.some(d => 
+              d.getFullYear() === dateToToggle.getFullYear() &&
+              d.getMonth() === dateToToggle.getMonth() &&
+              d.getDate() === dateToToggle.getDate()
+            );
             
-            const dateKey = getDateKey(dateToToggle);
-            
-            // Ne traiter le jour que si on ne l'a pas déjà modifié pendant ce drag
-            if (!draggedDays.has(dateKey)) {
-              // Vérifier si la date existe
-              const dateExists = selectedDates.some(d => 
-                d.getFullYear() === dateToToggle.getFullYear() &&
-                d.getMonth() === dateToToggle.getMonth() &&
-                d.getDate() === dateToToggle.getDate()
-              );
-              
-              // Toggle: ajouter si absent, retirer si présent
-              if (dateExists) {
-                onSelectDates(selectedDates.filter(d => 
-                  !(d.getFullYear() === dateToToggle.getFullYear() &&
-                    d.getMonth() === dateToToggle.getMonth() &&
-                    d.getDate() === dateToToggle.getDate())
-                ));
-              } else {
-                onSelectDates([...selectedDates, dateToToggle]);
-              }
-              
-              // Marquer ce jour comme modifié
-              setDraggedDays(new Set([...draggedDays, dateKey]));
+            // Toggle: ajouter si absent, retirer si présent
+            if (dateExists) {
+              onSelectDates(selectedDates.filter(d => 
+                !(d.getFullYear() === dateToToggle.getFullYear() &&
+                  d.getMonth() === dateToToggle.getMonth() &&
+                  d.getDate() === dateToToggle.getDate())
+              ));
+            } else {
+              onSelectDates([...selectedDates, dateToToggle]);
             }
+            
+            // Marquer ce jour comme modifié
+            setDraggedDays(new Set([...draggedDays, dateKey]));
           }
         } catch (error) {
           console.error('Erreur parsing date:', error);
@@ -165,6 +136,7 @@ export const Calendar = ({ selectedDates, onSelectDates }: CalendarProps) => {
   mode="multiple"
   selected={selectedDates}
   onSelect={(dates) => onSelectDates(dates || [])}
+  onMonthChange={setDisplayedMonth}
   locale={fr}
   
   // 1. Vos styles en ligne
@@ -226,15 +198,23 @@ export const Calendar = ({ selectedDates, onSelectDates }: CalendarProps) => {
             onClick={handleSelectAllDays}
             className='eraseSelection'
           >
-            Sélectionner tout
+            Sélectionner tout les jours
           </Button>
           <Button
             size="small"
-            onClick={() => onSelectDates([])}
+            onClick={() => {
+              // Effacer seulement les jours du mois affiché
+              const year = displayedMonth.getFullYear();
+              const month = displayedMonth.getMonth();
+              const remainingDates = selectedDates.filter(d => 
+                !(d.getFullYear() === year && d.getMonth() === month)
+              );
+              onSelectDates(remainingDates);
+            }}
             disabled={selectedDates.length === 0}
             className='eraseSelection'
           >
-            Effacer sélection
+            Effacer
           </Button>
         </Box>
       </Paper>
