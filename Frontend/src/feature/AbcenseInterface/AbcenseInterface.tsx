@@ -59,28 +59,40 @@ export const AbsenceInterface = ({ open, onClose }: AbsenceInterfaceProps) => {
     setHeureFin('');
   };
 
-  const handleSaveAbsence = () => {
+  const handleSaveAbsence = async () => {
     if (selectedCodeEns.length > 0 && selectedDates.length > 0 && heureDebut && heureFin) {
-      selectedCodeEns.forEach((codeEns) => {
-        const newId = Math.max(...absences.map(a => a.id), 0) + 1;
-        setAbsences(prev => [...prev, {
-          id: newId,
-          code_ens: codeEns,
-          dates: selectedDates,
-          heureDebut,
-          heureFin
-        }]);
-      });
-
-      setSelectedCodeEns([]);
-      setSelectedDates([]);
-      setHeureDebut('');
-      setHeureFin('');
+      try {
+        // Parser les heures en float
+        const [hoursStart, minutesStart] = heureDebut.split(':').map(Number);
+        const heureDebutFloat = hoursStart + minutesStart / 60;
+        
+        const [hoursEnd, minutesEnd] = heureFin.split(':').map(Number);
+        const heureFinFloat = hoursEnd + minutesEnd / 60;
+        
+        // Pour chaque enseignant
+        for (const codeEns of selectedCodeEns) {
+          // Pour chaque date
+          for (const date of selectedDates) {
+            const absenceData = {
+              enseignant: codeEns,
+              heure_debut: heureDebutFloat,
+              heure_fin: heureFinFloat,
+              jour: format(date, 'yyyy-MM-dd', { locale: fr })
+            };
+            
+            await api.createAbsence(absenceData);
+          }
+        }
+        
+        // Réinitialiser les champs après succès
+        setSelectedCodeEns([]);
+        setSelectedDates([]);
+        setHeureDebut('');
+        setHeureFin('');
+      } catch (error) {
+        console.error('Erreur lors de la création des absences:', error);
+      }
     }
-  };
-
-  const handleDeleteAbsence = (id: number) => {
-    setAbsences(absences.filter(a => a.id !== id));
   };
 
   const handleGetCode_ens = async () => {
