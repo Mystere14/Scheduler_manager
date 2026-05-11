@@ -8,6 +8,8 @@ from database import engine
 from models import Input_cours, Input_coursCreate, Input_coursRead, Input_coursUpdate
 from utils import save_to_db
 
+from triggers.creat_code_ens_from_input_cours import create_code_ens_from_input_cours
+
 logger = logging.getLogger(__name__)
 
 router = APIRouter(
@@ -31,6 +33,8 @@ def create_input_cours(input_cours_data: Input_coursCreate):
     Create a new input course.
     """
     new_input_cours = Input_cours.model_validate(input_cours_data)
+
+    create_code_ens_from_input_cours(input_cours_data.code_ens)
 
     with Session(engine) as session:
         try:
