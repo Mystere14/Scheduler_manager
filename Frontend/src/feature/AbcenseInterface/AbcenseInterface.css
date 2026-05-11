@@ -29,21 +29,26 @@
 }
 
 .closeButton,
-.addAbcenseButton {
+.addAbcenseButton:active{
   color: #059669 !important;
   padding: 0.5rem 1rem !important;
   border: 2px solid transparent !important;
+  margin: 0 !important;
 }
 
 .closeButton:hover,
 .closeButton:focus,
-.closeButton:active,
 .addAbcenseButton:hover,
-.addAbcenseButton:focus,
-.addAbcenseButton:active {
+.addAbcenseButton:focus {
   border: 2px solid #059669 !important;
   color: #059669 !important;
   background-color: #ecfdf5 !important; 
+}
+
+.addAbcenseButton
+{
+  padding: 0.5rem 1rem !important;
+  border: 2px solid transparent !important;
 }
 
 .addAbcenseButton .MuiTouchRipple-root {
