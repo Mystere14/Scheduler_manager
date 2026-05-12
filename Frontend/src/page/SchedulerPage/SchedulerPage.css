@@ -46,6 +46,11 @@
   transition: background-color 0.2s ease;
 }
 
+.absence-controls {
+  display: flex;
+  gap: 1rem;
+}
+
 .absence-button:hover {
   background-color: #059669;
 }

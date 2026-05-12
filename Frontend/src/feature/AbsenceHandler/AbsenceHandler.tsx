@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { Calendar } from '../../component/Calendar/Calendar';
 import { HourIntervalle } from '../../component/HourIntervalle/HourIntervalle';
-import './AbcenseInterface.css';
+import './AbsenceHandler.css';
 import api from '../../services/api';
 
 
