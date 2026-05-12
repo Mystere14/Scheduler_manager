@@ -4,7 +4,8 @@ import { ActionButtons } from '../../component/ActionButtons/ActionButtons';
 import { FilterSection } from '../../feature/FilterSection/FilterSection';
 import { ImportedDataTable } from '../../feature/ImportedDataTable/ImportedDataTable';
 import { SolutionTable } from '../../feature/SolutionTable/SolutionTable';
-import { AbsenceInterface } from '../../feature/AbcenseInterface/AbcenseInterface';
+import { AbsenceInterface } from '../../feature/AbsenceHandler/AbsenceHandler.tsx';
+import { AbsenceVisualisation } from '../../feature/AbsenceVisualisation/AbsenceVisualisation.tsx';
 import './SchedulerPage.css';
 import api from '../../services/api';
 
@@ -23,7 +24,8 @@ const formatColumnName = (name: string): string => {
 export const SchedulerPage = () => {
   const [importedData, setImportedData] = useState<any[]>([]);
   const [solutionData, setSolutionData] = useState<any[]>([]);
-  const [absenceDialogOpen, setAbsenceDialogOpen] = useState(false);
+  const [absenceHandlerDialogOpen, setAbsenceHandlerDialogOpen] = useState(false);
+  const [absenceVisualisationDialogOpen, setAbsenceVisualisationDialogOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const columnNames = importedData.length > 0
@@ -223,9 +225,14 @@ export const SchedulerPage = () => {
         <header className="page-header">
           <h1>Gestionnaire des emplois du temps</h1>
           {importedData.length === 0 || (
-            <button className="absence-button" onClick={() => setAbsenceDialogOpen(true)}>
-              Gérer les absences
-            </button>)}
+            <div className="absence-controls">
+              <button className="absence-button" onClick={() => setAbsenceHandlerDialogOpen(true)}>
+                Gérer les absences
+              </button>
+              <button className="absence-button" onClick={() => setAbsenceVisualisationDialogOpen(true)}>
+                Visualiser les absences
+              </button>
+            </div>)}
         </header>
 
         {importedData.length === 0 ? (
@@ -270,14 +277,15 @@ export const SchedulerPage = () => {
 
 
 
-      <input // Hidden file input for importing data to ensure security access to file 
+      <input 
         ref={fileInputRef}
         type="file"
         accept=".csv"
         onChange={handleFileChange}
         className="hidden-file-input"
       />
-      <AbsenceInterface open={absenceDialogOpen} onClose={() => setAbsenceDialogOpen(false)} />
+      <AbsenceInterface open={absenceHandlerDialogOpen} onClose={() => setAbsenceHandlerDialogOpen(false)} />
+      <AbsenceVisualisation open={absenceVisualisationDialogOpen} onClose={() => setAbsenceVisualisationDialogOpen(false)} />
     </div>
   );
 };
