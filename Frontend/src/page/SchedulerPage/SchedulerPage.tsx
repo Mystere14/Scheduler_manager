@@ -26,21 +26,22 @@ export const SchedulerPage = () => {
   const [absenceDialogOpen, setAbsenceDialogOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Get column names dynamically from data
   const columnNames = importedData.length > 0
     ? Object.keys(importedData[0])
     : [];
 
-  // Initialize filters dynamically based on columns
-  const [filters, setFilters] = useState<Filters>(
+  const [filtersImportedData, setFiltersImportedData] = useState<Filters>(
     columnNames.reduce((acc, col) => ({ ...acc, [col]: '' }), {})
   );
 
-  // Filter imported data based on filter values
-  const filteredData = useMemo(() => {
+  const [filtersSolutionData, setFiltersSolutionData] = useState<Filters>(
+    columnNames.reduce((acc, col) => ({ ...acc, [col]: '' }), {})
+  );
+
+  const filteredImportedData = useMemo(() => {
     return importedData.filter((row) => {
       return columnNames.every((col) => {
-        const filterValue = filters[col];
+        const filterValue = filtersImportedData[col] ?? '';
         const rowValue = (row as Record<string, any>)[col];
 
         if (filterValue === '') return true;
@@ -51,28 +52,69 @@ export const SchedulerPage = () => {
           .includes(filterValue.toLowerCase());
       });
     });
-  }, [importedData, filters, columnNames]);
+  }, [importedData, filtersImportedData, columnNames]);
 
-  const handleFilterChange = (key: string, value: string) => {
-    setFilters((prev) => ({
+  const filteredSolutionData = useMemo(() => {
+    return solutionData.filter((row) => {
+      return columnNames.every((col) => {
+        const filterValue = filtersSolutionData[col] ?? '';
+        const rowValue = (row as Record<string, any>)[col];
+
+        if (filterValue === '') return true;
+
+        return rowValue
+          .toString()
+          .toLowerCase()
+          .includes(filterValue.toLowerCase());
+      });
+    });
+  }, [solutionData, filtersSolutionData, columnNames]);
+
+  const handleFilterChangeImportedData = (key: string, value: string) => {
+    setFiltersImportedData((prev) => ({
       ...prev,
       [key]: value,
     }));
   };
 
-  const handleClearFilters = () => {
+  const handleFilterChangeSolutionData = (key: string, value: string) => {
+    setFiltersSolutionData((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const handleClearFiltersImported = () => {
     const emptyFilters = columnNames.reduce((acc, col) => ({ ...acc, [col]: '' }), {});
-    setFilters(emptyFilters);
+    setFiltersImportedData(emptyFilters);
+  };
+
+  const handleClearFiltersSolution = () => {
+    const emptyFilters = columnNames.reduce((acc, col) => ({ ...acc, [col]: '' }), {});
+    setFiltersSolutionData(emptyFilters);
   };
 
   const handleGenerateSolution = () => {
-    // Copy filtered data to solution table, removing volume column
-    setSolutionData(filteredData);
+    setSolutionData(importedData);
   };
 
-  const handleExport = () => {
-    // Export filtered data as CSV using PapaParse
-    const dataToExport = solutionData.length > 0 ? solutionData : filteredData;
+  const handleExportImportedData  = () => {
+    const dataToExport =filteredImportedData;
+    const csvString = Papa.unparse(dataToExport);
+    const blob = new Blob([csvString], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `scheduler_export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportSolutionData = () => {
+    const dataToExport = filteredSolutionData;
     const csvString = Papa.unparse(dataToExport);
     const blob = new Blob([csvString], { type: 'application/octet-stream' });
     const url = URL.createObjectURL(blob);
@@ -108,8 +150,6 @@ export const SchedulerPage = () => {
       'Here s the problematic data:\n' + JSON.stringify(rows)
     );
   }
-
-  console.log("Final response:", res);
 };
 
   const handleImport = () => {
@@ -136,7 +176,8 @@ export const SchedulerPage = () => {
 
           const newColumnNames = Object.keys(data[0]);
           const emptyFilters = newColumnNames.reduce((acc, col) => ({ ...acc, [col]: '' }), {});
-          setFilters(emptyFilters);
+          setFiltersImportedData(emptyFilters);
+          setFiltersSolutionData(emptyFilters);
           handleSetDatabase(data);  
         } else {
           alert('Le fichier doit contenir des données CSV valides');
@@ -159,19 +200,19 @@ export const SchedulerPage = () => {
             isGenerating={false}
             isImporting={false}
             onGenerate={() => { }}
-            onExport={handleExport}
+            onExport={handleExportSolutionData}
             onImport={() => { }}
           />
 
           <FilterSection
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            onClearFilters={handleClearFilters}
+            filters={filtersSolutionData}
+            onFilterChange={handleFilterChangeSolutionData}
+            onClearFilters={handleClearFiltersSolution}
             columns={columnNames}
             formatLabel={formatColumnName}
           />
         </div>
-        <SolutionTable data={solutionData} columns={columnNames} />
+        <SolutionTable data={filteredSolutionData} columns={columnNames} />
       </div>
     );
   }
@@ -208,20 +249,20 @@ export const SchedulerPage = () => {
                 isGenerating={true}
                 isImporting={true}
                 onGenerate={handleGenerateSolution}
-                onExport={handleExport}
+                onExport={handleExportImportedData}
                 onImport={handleImport}
                 href="#solution-controls"
               />
 
               <FilterSection
-                filters={filters}
-                onFilterChange={handleFilterChange}
-                onClearFilters={handleClearFilters}
+                filters={filtersImportedData}
+                onFilterChange={handleFilterChangeImportedData}
+                onClearFilters={handleClearFiltersImported}
                 columns={columnNames}
                 formatLabel={formatColumnName}
               />
             </div>
-            <ImportedDataTable data={filteredData} columns={columnNames} key={columnNames.join(',')} />
+            <ImportedDataTable data={filteredImportedData} columns={columnNames} key={columnNames.join(',')} />
             {solutionData.length > 0 && handleDisplaySolutionTable()}
           </div>
         )}
