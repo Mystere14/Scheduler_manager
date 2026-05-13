@@ -3,12 +3,14 @@ import './WelcomePage.css';
 
 interface WelcomePageProps {
   onNavigateToScheduler?: () => void;
+  onNavigateToValidaty?: () => void;
 }
 
-export const WelcomePage: React.FC<WelcomePageProps> = ({ onNavigateToScheduler }) => {
+export const WelcomePage: React.FC<WelcomePageProps> = ({ onNavigateToScheduler, onNavigateToValidaty }) => {
   const handleVerifyConstraints = () => {
-    console.log('Navigating to verify constraints');
-    // TODO: Navigate to constraints verification page
+    if (onNavigateToValidaty) {
+      onNavigateToValidaty();
+    }
   };
 
   const handleCreateSchedule = () => {

@@ -1,0 +1,138 @@
+.import-area {
+  background: white;
+  border-radius: 12px;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.import-area:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.import-area-title {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #10b981;
+  letter-spacing: 0.3px;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.imported-file-container {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.imported-file-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.file-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #d1fae5;
+  border-radius: 8px;
+  font-size: 1.2rem;
+}
+
+.file-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-top: 0.25rem;
+}
+
+.file-name {
+  margin: 0;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.file-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.action-button {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.view-button,
+.import-other-button {
+  background-color: #10b981;
+  color: white;
+}
+
+.view-button:hover,
+.import-other-button:hover {
+  background-color: #e5e7eb;
+  color: #333;
+}
+
+.view-button:active {
+  background-color: #047857;
+}
+
+
+.import-other-button:active {
+  background-color: #c4c8d0;
+}
+
+.import-button {
+  background-color: #10b981;
+  color: white;
+}
+
+.import-button:hover {
+  background-color: #059669;
+}
+
+.import-button:active {
+  background-color: #047857;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .import-area {
+    padding: 1rem;
+  }
+
+  .imported-file-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .file-actions {
+    width: 100%;
+  }
+
+  .action-button {
+    flex: 1;
+  }
+}
