@@ -1,10 +1,12 @@
 import React, { useRef, useState } from 'react';
 import Papa from 'papaparse';
+import { DataTable } from '../DataTable/DataTable';
 import './ImportArea.css';
 
 interface ImportAreaProps {
   title: string;
   onDataImported: (data: any[], fileName: string) => void;
+  onDataCleared?: () => void;
 }
 
 interface ImportedFile {
@@ -12,9 +14,10 @@ interface ImportedFile {
   fileName: string;
 }
 
-export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported }) => {
+export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, onDataCleared }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importedFile, setImportedFile] = useState<ImportedFile | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -43,57 +46,85 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported })
   };
 
   const handleResetFile = () => {
+    onDataImported([], '');
     setImportedFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+    if (onDataCleared) {
+      onDataCleared();
+    }
+  };
+
+  const handleViewData = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
   return (
-    <div className="import-area">
-      <h2 className="import-area-title">{title}</h2>
+    <>
+      <div className="import-area">
+        <h2 className="import-area-title">{title}</h2>
 
-      {!importedFile ? (
-        <div className="imported-file-container">
-          <div className="imported-file-info">
-            <div className="file-details">
-              <p className="file-name">Aucun fichier importé</p>
-            </div>
-          </div>
-
-          <div className="file-actions">
-            <button className="action-button import-button" onClick={handleImportClick}>
-              Importer un fichier
-            </button>
-          </div>
-
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileSelect}
-            accept=".csv"
-            className="hidden-file-input"
-          />
-        </div>
-      ) : (
+        {!importedFile ? (
           <div className="imported-file-container">
             <div className="imported-file-info">
-              <div className="file-icon">✓</div>
               <div className="file-details">
-                <p className="file-name">{importedFile.fileName}</p>
+                <p className="file-name">Aucun fichier importé</p>
               </div>
             </div>
 
             <div className="file-actions">
-              <button className="action-button view-button" onClick={() => console.log(importedFile.data)}>
-                Consulter
-              </button>
-              <button className="action-button import-other-button" onClick={handleResetFile}>
-              Importer un fichier
+              <button className="action-button import-button" onClick={handleImportClick}>
+                Importer un fichier
               </button>
             </div>
+
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileSelect}
+              accept=".csv"
+              className="hidden-file-input"
+            />
           </div>
+        ) : (
+            <div className="imported-file-container">
+              <div className="imported-file-info">
+                <div className="file-icon">✓</div>
+                <div className="file-details">
+                  <p className="file-name">{importedFile.fileName}</p>
+                </div>
+              </div>
+
+              <div className="file-actions">
+                <button className="action-button view-button" onClick={handleViewData}>
+                  Consulter
+                </button>
+                <button className="action-button import-other-button" onClick={handleResetFile}>
+                Supprimer le fichier
+                </button>
+              </div>
+            </div>
+        )}
+      </div>
+
+      {showModal && importedFile && (
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-body">
+              <DataTable
+                title={importedFile.fileName}
+                columns={importedFile.data.length > 0 ? Object.keys(importedFile.data[0]) : []}
+                data={importedFile.data}
+              />
+            </div>
+          </div>
+        </div>
       )}
-    </div>
+    </>
   );
 };

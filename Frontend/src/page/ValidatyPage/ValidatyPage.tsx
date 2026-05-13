@@ -31,22 +31,22 @@ export const ValidatyPage = () => {
             <ImportArea
               title="Cours.csv"
               onDataImported={handleFirstImport}
+              onDataCleared={() => setFirstImport(null)}
             />
             <ImportArea
               title="EDT.csv"
               onDataImported={handleSecondImport}
+              onDataCleared={() => setSecondImport(null)}
             />
           </div>
 
           {(firstImport && secondImport) && (
-            <div className="data-display-section">
-              {firstImport && (
+            <div className="data-tables">
                 <DataTable
                   title={firstImport.fileName}
-                  columns={firstImport.data.length > 0 ? Object.keys(firstImport.data[0]) : []}
+                  columns={Object.keys(firstImport.data[0]) || []}
                   data={firstImport.data}
                 />
-              )}
             </div>
           )}
         </main>
