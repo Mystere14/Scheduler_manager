@@ -1,7 +1,7 @@
 {
-  "name": "vite-project",
+  "name": "scheduler-manager-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,6 +13,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^9.0.1",
+    "@tauri-apps/api": "^2.0.0",
     "@types/papaparse": "^5.5.2",
     "date-fns": "^4.1.0",
     "papaparse": "^5.5.3",

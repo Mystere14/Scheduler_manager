@@ -1,17 +1,33 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import './DataTable.css';
 
 interface DataTableProps {
-  columns: string[];
-  data: Record<string, number>[];
+  columns?: string[];
+  data: Record<string, any>[];
   title: string;
 }
 
-export const DataTable = ({ columns, data, title }: DataTableProps) => {
+export const DataTable = ({ columns: propsColumns, data, title }: DataTableProps) => {
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: 'asc' | 'desc';
   } | null>(null);
+
+  // Extract all unique columns from data if not provided
+  const columns = useMemo(() => {
+    if (propsColumns && propsColumns.length > 0) {
+      return propsColumns;
+    }
+    
+    const columnSet = new Set<string>();
+    data.forEach((row) => {
+      Object.keys(row).forEach((key) => {
+        columnSet.add(key);
+      });
+    });
+    
+    return Array.from(columnSet);
+  }, [propsColumns, data]);
 
   const handleSort = (key: string) => {
     setSortConfig((prev) => {
