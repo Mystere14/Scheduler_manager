@@ -1,7 +1,6 @@
 import os
 import sys
 
-from routes import input_cours
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from sqlmodel import create_engine
@@ -13,7 +12,7 @@ from starlette.middleware.cors import CORSMiddleware
 # Add the project root to sys.path to allow imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from routes import absence, cours, code_ens
+from routes import absence, cours, code_ens, input_cours, analytics_creneau, compare_scheduler
 
 
 @asynccontextmanager
@@ -44,7 +43,7 @@ app = FastAPI(
 # Create engine
 engine = create_engine(settings.DATABASE_URL, echo=True)
 
-# CORS configuration
+# CORS configuration - Include Tauri app origins
 origins = [
     "http://localhost:3000",
     "http://localhost:5173",
@@ -52,6 +51,8 @@ origins = [
     "http://127.0.0.1:5173",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "tauri://localhost",
+    "http://tauri.localhost",
 ]
 
 app.add_middleware(
@@ -67,7 +68,8 @@ app.include_router(absence.router)
 app.include_router(cours.router)
 app.include_router(code_ens.router)
 app.include_router(input_cours.router)
-
+app.include_router(analytics_creneau.router)
+app.include_router(compare_scheduler.router)
 
 @app.get("/")
 def read_root():

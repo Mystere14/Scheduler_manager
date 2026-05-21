@@ -2,11 +2,14 @@ import React, { useRef, useState } from 'react';
 import Papa from 'papaparse';
 import { DataTable } from '../DataTable/DataTable';
 import './ImportArea.css';
+import api from '../../services/api';
+
 
 interface ImportAreaProps {
   title: string;
   onDataImported: (data: any[], fileName: string) => void;
   onDataCleared?: () => void;
+  isUsingAPI?: boolean;
 }
 
 interface ImportedFile {
@@ -14,7 +17,7 @@ interface ImportedFile {
   fileName: string;
 }
 
-export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, onDataCleared }) => {
+export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, onDataCleared, isUsingAPI }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importedFile, setImportedFile] = useState<ImportedFile | null>(null);
   const [showModal, setShowModal] = useState(false);
@@ -45,6 +48,35 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
     fileInputRef.current?.click();
   };
 
+  const handleSendVcalendarToAPI = async () => {
+    fileInputRef.current?.click();
+  }
+
+  const handleVcalendarFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const data = await api.createAnalyticsCreneauFromVcalendar(file);
+      setImportedFile({ data: data.data, fileName: file.name });
+      onDataImported(data.data, file.name);
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi du fichier vCalendar:', error);
+      alert('Erreur lors de l\'envoi du fichier vCalendar');
+    }
+  }
+
+  const handleAPIImport = async () => {
+    try {
+      const data = await api.getAnalyticsCreneau();
+      setImportedFile({data,fileName: 'Données de l\'API'});
+      onDataImported(data, 'Données de l\'API');
+    } catch (error) {
+      console.error('Erreur lors de la récupération des données de l\'API:', error);
+      alert('Erreur lors de la récupération des données de l\'API');
+    }
+  };
+
   const handleResetFile = () => {
     onDataImported([], '');
     setImportedFile(null);
@@ -70,6 +102,7 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
         <h2 className="import-area-title">{title}</h2>
 
         {!importedFile ? (
+          <>
           <div className="imported-file-container">
             <div className="imported-file-info">
               <div className="file-details">
@@ -78,19 +111,23 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
             </div>
 
             <div className="file-actions">
-              <button className="action-button import-button" onClick={handleImportClick}>
-                Importer un fichier
+              <button className="action-button import-button" onClick={isUsingAPI ? handleSendVcalendarToAPI : handleImportClick}>
+                Importer un fichier 
               </button>
             </div>
 
             <input
               type="file"
               ref={fileInputRef}
-              onChange={handleFileSelect}
-              accept=".csv"
+              onChange={isUsingAPI ? handleVcalendarFileSelect : handleFileSelect}
+              accept={isUsingAPI ? ".ics" : ".csv"}
               className="hidden-file-input"
             />
           </div>
+          {isUsingAPI && (<button className="action-button import-button" onClick={handleAPIImport} style={{ display: 'none' }}>
+                Utiliser l'API
+          </button>)}
+          </>
         ) : (
             <div className="imported-file-container">
               <div className="imported-file-info">
@@ -111,7 +148,7 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
             </div>
         )}
       </div>
-
+      
       {showModal && importedFile && (
         <div className="modal-overlay" onClick={handleCloseModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -128,3 +165,4 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
     </>
   );
 };
+
