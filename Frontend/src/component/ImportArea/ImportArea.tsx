@@ -135,7 +135,7 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
         {!importedFile ? (
           <>
           <div className="imported-file-container">
-            <div className="imported-file-info">
+            <div className="imported-file-info empty">
               <div className="file-details">
                 <p className="file-name">Aucun fichier importé</p>
               </div>
