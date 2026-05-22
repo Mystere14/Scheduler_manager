@@ -152,6 +152,7 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
       {showModal && importedFile && (
         <div className="modal-overlay" onClick={handleCloseModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={handleCloseModal}>×</button>
             <div className="modal-body">
               <DataTable
                 title={importedFile.fileName}
