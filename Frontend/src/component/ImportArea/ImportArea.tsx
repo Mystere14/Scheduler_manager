@@ -120,7 +120,7 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
               type="file"
               ref={fileInputRef}
               onChange={isUsingAPI ? handleVcalendarFileSelect : handleFileSelect}
-              accept={isUsingAPI ? ".ics" : ".csv"}
+              accept={isUsingAPI ? ".vcs" : ".csv"}
               className="hidden-file-input"
             />
           </div>
