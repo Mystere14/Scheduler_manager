@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ImportArea } from '../../component/ImportArea/ImportArea';
 import { DataTable } from '../../component/DataTable/DataTable';
 import { LineCompare } from '../../component/LineCompare/LineCompare';
-import './ValidatyPage.css';
+import './ValidationPage.css';
 import api from '../../services/api';
 
 interface ImportedData {

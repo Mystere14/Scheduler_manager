@@ -2,7 +2,7 @@ import './App.css'
 import { useState } from 'react'
 import { WelcomePage } from './page/WelcomePage/WelcomePage'
 import { SchedulerPage } from './page/SchedulerPage/SchedulerPage'
-import { ValidatyPage } from './page/ValidatyPage/ValidatyPage'
+import { ValidatyPage } from './page/ValidatyPage/ValidationPage'
 
 function App() {
   const [currentPage, setCurrentPage] = useState<'welcome' | 'scheduler' | 'validaty'>('welcome')
