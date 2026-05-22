@@ -133,7 +133,7 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
               <div className="imported-file-info">
                 <div className="file-icon">✓</div>
                 <div className="file-details">
-                  <p className="file-name">{importedFile.fileName}</p>
+                  <p className="file-name">{`${importedFile.fileName.slice(0, -4)}`}</p>
                 </div>
               </div>
 
@@ -155,7 +155,7 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
             <button className="modal-close" onClick={handleCloseModal}>×</button>
             <div className="modal-body">
               <DataTable
-                title={importedFile.fileName}
+                title={`${importedFile.fileName.slice(0, -4)}`}
                 columns={importedFile.data.length > 0 ? Object.keys(importedFile.data[0]) : []}
                 data={importedFile.data}
               />
