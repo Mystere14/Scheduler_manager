@@ -3,36 +3,62 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
   border-bottom: 1px solid #ddd;
-  padding: 0.75rem 1rem;
+  padding: 1rem;
   align-items: center;
 }
 
 .line-compare-cell {
-  padding: 0;
+  padding: 0rem 0.5rem 0rem 4rem;
   text-align: left;
   font-size: 14px;
 }
 
-.line-compare-cell.code-ens {
+/* Style pour situation avec deux sections côte à côte */
+.sections-container:not(.single-section) .line-compare-cell.code-ens {
   font-weight: 500;
   color: #333;
   padding-left: 0.5rem;
 }
 
-.line-compare-cell.code-res-sae {
+.sections-container:not(.single-section) .line-compare-cell.code-res-sae {
   color: #555;
+  padding-left: 0.2rem;
 }
 
-.line-compare-cell.type-ens {
+.sections-container:not(.single-section) .line-compare-cell.type-ens {
   color: #0066cc;
   font-weight: 500;
   padding-left: 2rem;
 }
 
-.line-compare-cell.heure {
+.sections-container:not(.single-section) .line-compare-cell.heure {
   color: #666;
   text-align: left;
-  padding-left: 2rem;
+  padding-left: 1.8rem;
+}
+
+/* Style pour situation avec une seule section */
+.single-section .line-compare-cell.code-ens {
+  font-weight: 500;
+  color: #333;
+  padding-left: 4.3rem;
+}
+
+.single-section .line-compare-cell.code-res-sae {
+  color: #555;
+  padding-left: 3.3rem;
+}
+
+.single-section .line-compare-cell.type-ens {
+  color: #0066cc;
+  font-weight: 500;
+  padding-left: 4.5rem;
+}
+
+.single-section .line-compare-cell.heure {
+  color: #666;
+  text-align: left;
+  padding-left: 5rem;
 }
 
 .line-compare:hover {
