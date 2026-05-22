@@ -32,7 +32,7 @@ export const ValidatyPage = () => {
         setLoading(true);
         setError(null);
         try {
-          await api.createAnalyticsCreneauWithEachSpreadsheet(firstImport , secondImport);
+          await api.createAnalyticsTimeslotWithEachSpreadsheet(firstImport , secondImport);
           setComparisonResult(await api.getCompareScheduler());
          
         } catch (err) {

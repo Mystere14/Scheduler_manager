@@ -57,7 +57,7 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
     if (!file) return;
 
     try {
-      const data = await api.createAnalyticsCreneauFromVcalendar(file);
+      const data = await api.createAnalyticsTimeslotFromVcalendar(file);
       setImportedFile({ data: data.data, fileName: file.name });
       onDataImported(data.data, file.name);
     } catch (error) {
@@ -68,7 +68,7 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
 
   const handleAPIImport = async () => {
     try {
-      const data = await api.getAnalyticsCreneau();
+      const data = await api.getAnalyticsTimeslot();
       setImportedFile({data,fileName: 'Données de l\'API'});
       onDataImported(data, 'Données de l\'API');
     } catch (error) {
