@@ -192,30 +192,30 @@ class AbsenceUpdate(SQLModel):
     description: Optional[str] = None
 
 
-class Analytics_creneau(SQLModel, table=True):
+class analytics_timeslot(SQLModel, table=True):
     """
     Csv analytic file with parsed data
     """
-    __tablename__ = "analytics_creneau"
+    __tablename__ = "analytics_timeslot"
     __table_args__ = {"extend_existing": True}
     id: Optional[int] = Field(default=None, primary_key=True)
     data: List[dict] = Field(default=[], sa_column=Column(JSON_Type))
 
-class Analytics_creneauRead(SQLModel):
+class analytics_timeslotRead(SQLModel):
     """
     Csv analytic file
     """
     id: Optional[int] = None
     data: List[dict] = []
 
-class Analytics_creneauCreate(SQLModel):
+class analytics_timeslotCreate(SQLModel):
     """
     Csv analytic file
     """
     id: Optional[int] = None
     data: List[dict] = []
 
-class Analytics_creneauUpdate(SQLModel):
+class analytics_timeslotUpdate(SQLModel):
     """
     Csv analytic file
     """

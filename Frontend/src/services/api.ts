@@ -129,26 +129,26 @@ export default {
       method: 'DELETE',
     });
   },
-  // ===== Analytics_creneau (Analytics) =====
-  getAnalyticsCreneau() { 
-    return request('/analytics_creneau/', {
+  // ===== Analytics_timeslot (Analytics) =====
+  getAnalyticsTimeslot() { 
+    return request('/analytics_timeslot/', {
       method: 'GET',
     });
   },
-  createAnalyticsCreneau(analyticsCreneauData: any) {
-    return request('/analytics_creneau/', {
+  createAnalyticsTimeslot(analyticsTimeslotData: any) {
+    return request('/analytics_timeslot/', {
       method: 'POST',
-      body: JSON.stringify(analyticsCreneauData),
+      body: JSON.stringify(analyticsTimeslotData),
     });
   },
-  async createAnalyticsCreneauFromVcalendar(file: File) {
+  async createAnalyticsTimeslotFromVcalendar(file: File) {
     const formData = new FormData();
     formData.append('file', file);
     
     const headers: Record<string, any> = {};
     // Don't set Content-Type, let the browser set it with boundary
     
-    const url = `${(window as any).__API_URL__ || 'http://localhost:8000'}/analytics_creneau/vcalendar`;
+    const url = `${(window as any).__API_URL__ || 'http://localhost:8000'}/analytics_timeslot/vcalendar`;
     const res = await fetch(url, {
       method: 'POST',
       headers,
@@ -164,7 +164,7 @@ export default {
     if (!text) return null;
     return JSON.parse(text);
   },
-  async createAnalyticsCreneauWithEachSpreadsheet(schedulerPlanned: any,schedulerPlaced: any) {
+  async createAnalyticsTimeslotWithEachSpreadsheet(schedulerPlanned: any,schedulerPlaced: any) {
     const formData = new FormData();
     
     const plannedBlob = new Blob([JSON.stringify(schedulerPlanned)], { type: 'application/json' });
@@ -173,7 +173,7 @@ export default {
     formData.append('FileschedulerPlanned', plannedBlob, 'scheduled_planned.json');
     formData.append('schedulerPlaced', placedBlob, 'scheduled_placed.json');
 
-    const url = `${(window as any).__API_URL__ || 'http://localhost:8000'}/analytics_creneau/withEachSpreadsheet`;
+    const url = `${(window as any).__API_URL__ || 'http://localhost:8000'}/analytics_timeslot/withEachSpreadsheet`;
     const res = await fetch(url, {
       method: 'POST',
       body: formData,
@@ -186,18 +186,18 @@ export default {
     }
 
   },
-  updateAnalyticsCreneau(analyticsCreneauData: any) {
-    return request('/analytics_creneau/', {
+  updateAnalyticsTimeslot(analyticsTimeslotData: any) {
+    return request('/analytics_timeslot/', {
       method: 'PUT',
-      body: JSON.stringify(analyticsCreneauData),
+      body: JSON.stringify(analyticsTimeslotData),
     });
   },
-  deleteAnalyticsCreneau() {
-    return request('/analytics_creneau/', {
+  deleteAnalyticsTimeslot() {
+    return request('/analytics_timeslot/', {
       method: 'DELETE',
     });
   },
-  // ===== Analytics_creneau (Analytics) =====
+  // ===== compare_scheduler  =====
   getCompareScheduler() {
     return request('/compare_scheduler/', {
       method: 'GET',
