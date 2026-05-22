@@ -61,7 +61,7 @@ export const ValidatyPage = () => {
               isUsingAPI={false}
             />
             <ImportArea
-              title="Créneau placé (ics)"
+              title="Créneau placé (vcs)"
               onDataImported={handleSecondImport}
               onDataCleared={() => setSecondImport(null)}
               isUsingAPI={true}
@@ -107,7 +107,7 @@ export const ValidatyPage = () => {
                       {/* Créneaux surplacés (heures négatives) */}
                       {comparisonResult.filter((item: any) => item.heures < 0).length > 0 && (
                         <div className="section-overplaced">
-                          <h3>Créneaux surplacés</h3>
+                          <h3>Débordement de créneaux</h3>
                           <div className="results-header">
                             <div className="header-cell">Code_Ens</div>
                             <div className="header-cell">Code_Res_SAE</div>
