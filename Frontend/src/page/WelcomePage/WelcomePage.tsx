@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './WelcomePage.css';
 
 interface WelcomePageProps {
@@ -6,17 +7,15 @@ interface WelcomePageProps {
   onNavigateToValidaty?: () => void;
 }
 
-export const WelcomePage: React.FC<WelcomePageProps> = ({ onNavigateToScheduler, onNavigateToValidaty }) => {
+export const WelcomePage: React.FC<WelcomePageProps> = () => {
+  const navigate = useNavigate();
+
   const handleVerifyConstraints = () => {
-    if (onNavigateToValidaty) {
-      onNavigateToValidaty();
-    }
+    navigate('/validate');
   };
 
   const handleCreateSchedule = () => {
-    if (onNavigateToScheduler) {
-      onNavigateToScheduler();
-    }
+    navigate('/scheduler');
   };
 
   return (

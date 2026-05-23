@@ -55,13 +55,13 @@ export const ValidatyPage = () => {
         <main className="validaty-content">
           <div className="import-areas">
             <ImportArea
-              title="Créneau prévu (csv)"
+              title="Créneaux prévus (csv)"
               onDataImported={handleFirstImport}
               onDataCleared={() => setFirstImport(null)}
               isUsingAPI={false}
             />
             <ImportArea
-              title="Créneau placé (vcs)"
+              title="Créneaux placés (vcs)"
               onDataImported={handleSecondImport}
               onDataCleared={() => setSecondImport(null)}
               isUsingAPI={true}
