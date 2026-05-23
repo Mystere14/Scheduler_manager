@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { WelcomePage } from './page/WelcomePage/WelcomePage'
 import { SchedulerPage } from './page/SchedulerPage/SchedulerPage'
 import { ValidatyPage } from './page/ValidatyPage/ValidationPage'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 
 function App() {
   const [currentPage, setCurrentPage] = useState<'welcome' | 'scheduler' | 'validaty'>('welcome')
@@ -15,21 +16,14 @@ function App() {
     setCurrentPage('validaty')
   }
 
-  return (
-    <>
-      {currentPage === 'welcome' && (
-        <WelcomePage 
-          onNavigateToScheduler={handleNavigateToScheduler}
-          onNavigateToValidaty={handleNavigateToValidaty}
-        />
-      )}
-      {currentPage === 'scheduler' && (
-        <SchedulerPage />
-      )}
-      {currentPage === 'validaty' && (
-        <ValidatyPage />
-      )}
-    </>
+  return (    
+  <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<WelcomePage />} />
+        <Route path="/scheduler" element={<SchedulerPage />} />
+        <Route path="/validate" element={<ValidatyPage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
