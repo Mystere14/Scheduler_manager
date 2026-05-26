@@ -36,8 +36,14 @@ def parse_calendar_file(file_content: bytes):
             text = str(summary)
             parts = text.split(' - ') 
             if parts[1] != 'Autonomie':
-                professeurs.add(parts[3])
-                cours.append((parts[0], parts[1], parts[3], last))
+                if '/' in parts[3]:
+                    everyTeacher =parts[3].split('/')
+                    for teacher in everyTeacher:
+                        professeurs.add(teacher.strip())
+                        cours.append((parts[0], parts[1], teacher.strip(), last))
+                else:
+                    professeurs.add(parts[3])
+                    cours.append((parts[0], parts[1], parts[3], last))
             else:
                 professeurs.add('Autonomie')
                 cours.append((parts[0], parts[1], 'Autonomie', last))
@@ -117,8 +123,15 @@ def extract_calendar_data():
         text = str(summary)
         parts = text.split(' - ') 
         if parts[1] != 'Autonomie':
-            professeurs.add(parts[3])
-            cours.append((parts[0], parts[1], parts[3], last))
+            if '/' in parts[3]:
+                print(parts[3])
+                everyTeacher =parts[3].split('/')
+                for teacher in everyTeacher:
+                    professeurs.add(teacher.strip())
+                    cours.append((parts[0], parts[1], teacher.strip(), last))
+            else:
+                professeurs.add(parts[3])
+                cours.append((parts[0], parts[1], parts[3], last))
         else:
             professeurs.add('Autonomie')
             cours.append((parts[0], parts[1], 'Autonomie', last))
