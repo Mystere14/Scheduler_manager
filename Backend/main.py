@@ -9,7 +9,6 @@ from config import settings
 from database import init_db
 from starlette.middleware.cors import CORSMiddleware
 
-# Add the project root to sys.path to allow imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from routes import absence, cours, code_ens, input_cours, compare_scheduler, analytics_timeslot
