@@ -1,0 +1,207 @@
+// This file contains functions to interact with the backend API for the Scheduler Manager.
+// It handles API calls for managing Code_ens (teachers), Cours (sessions), and Absences.
+
+// Use dynamic API URL for desktop app compatibility
+const BASE_URL = (window as any).__API_URL__ || 'http://localhost:8000';
+
+async function request(path: string, options: RequestInit = {}) {
+  const headers: Record<string, any> = {
+    'Content-Type': 'application/json',
+    ...(options.headers || {})
+  };
+
+  const url = `${BASE_URL}${path}`;
+  const res = await fetch(url, {
+    ...options,
+    headers,
+  });
+
+  const text = await res.text(); // 🔥 toujours lire brut
+
+  if (!res.ok) {
+    throw new Error(`API ${res.status}: ${text}`);
+  }
+
+  // si pas de body
+  if (!text) return null;
+
+  return JSON.parse(text);
+}
+
+export { request };
+
+export default {
+  // ===== Code_ens (Teachers) =====
+  getCodeEns() {
+    return request('/code_ens/');
+  },
+  getCodeEnsById(code: string) {
+    return request(`/code_ens/${encodeURIComponent(code)}`);
+  },
+  createCodeEns(codeEnsData: any) {
+    return request('/code_ens/', {
+      method: 'POST',
+      body: JSON.stringify(codeEnsData),
+    });
+  },
+  updateCodeEns(code: string, codeEnsData: any) {
+    return request(`/code_ens/${encodeURIComponent(code)}`, {
+      method: 'PUT',
+      body: JSON.stringify(codeEnsData),
+    });
+  },
+  deleteCodeEns(code: string) {
+    return request(`/code_ens/${encodeURIComponent(code)}`, {
+      method: 'DELETE',
+    });
+  },
+
+  // ===== Cours (Sessions) =====
+  getCours() {
+    return request('/cours/');
+  },
+  getCoursByTeacher(teacher: string) {
+    return request(`/cours/teacher/${encodeURIComponent(teacher)}`);
+  },
+  createCours(coursData: any) {
+    return request('/cours/', {
+      method: 'POST',
+      body: JSON.stringify(coursData),
+    });
+  },
+  updateCours(id: string, coursData: any) {
+    return request(`/cours/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(coursData),
+    });
+  },
+  deleteCours(id: string) {
+    return request(`/cours/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  // ===== Input_cours (Input Courses) =====
+  getInputCours() {
+    return request('/input_cours/');
+  },
+  createInputCours(inputCoursData: any) {
+    return request('/input_cours/', {
+      method: 'POST',
+      body: JSON.stringify(inputCoursData),
+    });
+  },
+  updateInputCours(id: string, inputCoursData: any) {
+    return request(`/input_cours/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(inputCoursData),
+    });
+  },
+  deleteInputCoursById(id: string) {
+    return request(`/input_cours/${id}`, {
+      method: 'DELETE',
+    });
+  },
+  deleteInputCours() {
+    return request('/input_cours/', {
+      method: 'DELETE',
+    });
+  },
+  // ===== Absence (Absences) =====
+
+  getAbsenceByEnseignant(enseignant: string) {
+    return request(`/absences/teacher/${encodeURIComponent(enseignant)}`);
+  },
+  createAbsence(absenceData: any) {
+    return request('/absences/', {
+      method: 'POST',
+      body: JSON.stringify(absenceData),
+    });
+  },
+  updateAbsence(id: string, absenceData: any) {
+    return request(`/absences/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(absenceData),
+    });
+  },
+  deleteAbsence(id: string) {
+    return request(`/absences/${id}`, {
+      method: 'DELETE',
+    });
+  },
+  // ===== Analytics_timeslot (Analytics) =====
+  getAnalyticsTimeslot() { 
+    return request('/analytics_timeslot/', {
+      method: 'GET',
+    });
+  },
+  createAnalyticsTimeslot(analyticsTimeslotData: any) {
+    return request('/analytics_timeslot/', {
+      method: 'POST',
+      body: JSON.stringify(analyticsTimeslotData),
+    });
+  },
+  async createAnalyticsTimeslotFromVcalendar(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const headers: Record<string, any> = {};
+    // Don't set Content-Type, let the browser set it with boundary
+    
+    const url = `${(window as any).__API_URL__ || 'http://localhost:8000'}/analytics_timeslot/vcalendar`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+
+    const text = await res.text();
+
+    if (!res.ok) {
+      throw new Error(`API ${res.status}: ${text}`);
+    }
+
+    if (!text) return null;
+    return JSON.parse(text);
+  },
+  async createAnalyticsTimeslotWithEachSpreadsheet(schedulerPlanned: any,schedulerPlaced: any) {
+    const formData = new FormData();
+    
+    const plannedBlob = new Blob([JSON.stringify(schedulerPlanned)], { type: 'application/json' });
+    const placedBlob = new Blob([JSON.stringify(schedulerPlaced)], { type: 'application/json' });
+    
+    formData.append('FileschedulerPlanned', plannedBlob, 'scheduled_planned.json');
+    formData.append('schedulerPlaced', placedBlob, 'scheduled_placed.json');
+
+    const url = `${(window as any).__API_URL__ || 'http://localhost:8000'}/analytics_timeslot/withEachSpreadsheet`;
+    const res = await fetch(url, {
+      method: 'POST',
+      body: formData,
+    });
+
+    const text = await res.text();
+
+    if (!res.ok) {
+      throw new Error(`API ${res.status}: ${text}`);
+    }
+
+  },
+  updateAnalyticsTimeslot(analyticsTimeslotData: any) {
+    return request('/analytics_timeslot/', {
+      method: 'PUT',
+      body: JSON.stringify(analyticsTimeslotData),
+    });
+  },
+  deleteAnalyticsTimeslot() {
+    return request('/analytics_timeslot/', {
+      method: 'DELETE',
+    });
+  },
+  // ===== compare_scheduler  =====
+  getCompareScheduler() {
+    return request('/compare_scheduler/', {
+      method: 'GET',
+    });
+  },
+};
+

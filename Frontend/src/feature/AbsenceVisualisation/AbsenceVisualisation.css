@@ -1,0 +1,151 @@
+.absence-filter-section {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  border-top: 3px solid #10b981;
+  border-left: 3px solid #10b981;
+  margin-bottom: 20px;
+}
+
+.absence-filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #10b981;
+}
+
+.absence-filter-header h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #10b981;
+  font-weight: 600;
+}
+
+.absence-filter-inputs {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.absence-filter-inputs input {
+  flex: 1;
+  min-width: 150px;
+}
+
+.btn-clear-filters {
+  background: white;
+  color: #161b19;
+  border: 2px solid #10b981;
+  padding: 0.6rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+  box-shadow: none;
+}
+
+.btn-clear-filters:hover {
+  transform: none;
+  background: #ecfdf5;
+  border-color: #059669;
+  color: #059669;
+  box-shadow: none;
+}
+
+.btn-clear-filters:active {
+  transform: none;
+  background: #d1fae5;
+}
+
+.absence-row {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.2s ease;
+}
+
+.absence-row:hover {
+  background: #f0fdf4;
+}
+
+.absence-row p {
+  margin: 0;
+  flex: 1;
+  color: #161b19;
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 8px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.delete-button svg {
+  color: #ef4444;
+  stroke-width: 2.5;
+}
+
+.delete-button:hover {
+  background: #fee2e2;
+  transform: scale(1.1);
+}
+
+.delete-button:hover svg {
+  color: #991b1b;
+}
+
+.code-ens-accordion {
+  padding: 0 !important;
+  background: white;
+  border: 1px solid #e5e7eb !important;
+  margin-bottom: 8px !important;
+  border-radius: 6px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.code-ens-accordion-summary {
+  min-height: 40px !important;
+  height: 40px !important;
+  padding: 8px 16px !important;
+  max-height: 40px !important;
+  background: linear-gradient(to right, #f0fdf4, white) !important;
+  border-left: 4px solid #10b981 !important;
+}
+
+.code-ens-accordion-summary h6 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #10b981;
+}
+
+.code-ens-accordion-summary:hover {
+  background: #ecfdf5 !important;
+}
+
+.absence-dialog-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #10b981;
+  margin: 0rem;
+}
+
+.absence-list {
+  margin-top: 20px;
+}
+
