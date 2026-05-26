@@ -164,9 +164,6 @@ def extract_calendar_data():
     # Parse CSV string into list of dictionaries
     parsed_data = parse_csv_string(csv_content)
     
-    # Write parsed data to CSV file
-    write_parsed_data_to_csv(parsed_data)
-    
     return parsed_data
 
 

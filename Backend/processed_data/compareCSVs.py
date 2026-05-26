@@ -105,17 +105,18 @@ def aggregate_sessions(sessions):
 
 def preprocessed_scheduler_planned(processed_data: pd.DataFrame):
     sessionPlanned = []
+
     for _, row in processed_data.iterrows():
         type_ens = row['type_ens'].strip()
         if type_ens == 'C':
             type_ens = 'AMPHI'
-        sessionPlanned.append((row['code_ens'].strip(), type_ens.strip(), row['code_res_sae'].strip(), float(row['volume'])))
+        sessionPlanned.append((row['code_ens'].strip(), type_ens.strip(), session_name[row['code_res_sae']], float(row['volume'])))
     # (prof, type_ens, matière, heures) 
     return sessionPlanned
 
 def preprocessed_scheduler_placed(processed_data: pd.DataFrame):
     
-    dictMatiere = processed_data['matière'].map(lambda x: session_name[x].strip()).tolist()
+    dictMatiere = processed_data['matière'].map(lambda x: x.strip()).tolist()
 
     sessionPlaced = []
     for column in processed_data:
@@ -130,3 +131,4 @@ def preprocessed_scheduler_placed(processed_data: pd.DataFrame):
             # (prof, type_ens, matière, heures) 
 
     return sessionPlaced
+
