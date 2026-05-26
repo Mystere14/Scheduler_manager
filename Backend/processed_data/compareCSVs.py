@@ -116,17 +116,19 @@ def preprocessed_scheduler_planned(processed_data: pd.DataFrame):
 
 def preprocessed_scheduler_placed(processed_data: pd.DataFrame):
     
+    dictMatiere = processed_data['matière'].map(lambda x: x.strip()).tolist()
+
     sessionPlaced = []
     for column in processed_data:
         if column == 'matière':
             continue
         session = processed_data[processed_data[column] != ''].index.tolist()
         hours = processed_data[processed_data[column] != ''][column].tolist()
-        matiere= processed_data['matière'][session[0]]
         for i in range(len(session)):
             teacher = column.split(' - ')[0].strip()
             type_ens = column.split(' - ')[1].strip()
-            sessionPlaced.append((teacher.strip(), type_ens.strip(), matiere, float(hours[i])))
+            sessionPlaced.append((teacher.strip(), type_ens.strip(), dictMatiere[session[i]], float(hours[i])))
             # (prof, type_ens, matière, heures) 
 
     return sessionPlaced
+
