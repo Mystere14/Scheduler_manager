@@ -1,7 +1,6 @@
 import os
 import sys
 
-from Backend.routes import analytics_timeslot
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from sqlmodel import create_engine
@@ -13,7 +12,7 @@ from starlette.middleware.cors import CORSMiddleware
 # Add the project root to sys.path to allow imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from routes import absence, cours, code_ens, input_cours, compare_scheduler
+from routes import absence, cours, code_ens, input_cours, compare_scheduler, analytics_timeslot
 
 
 @asynccontextmanager
