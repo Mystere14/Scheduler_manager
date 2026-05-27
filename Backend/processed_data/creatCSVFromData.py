@@ -34,16 +34,18 @@ def parse_calendar_file(file_content: bytes):
             last = int((endDate - startDate).total_seconds())/3600
             
             text = str(summary)
-            parts = text.split(' - ') 
+            desc = event.get('DESCRIPTION')
+            prof = from_text_to_dict(desc.split(' '))
+            parts = text.split(' / ') #(DESCRIPTION.profs, SUMMARY[0], SUMMARY[1], last)
             if parts[1] != 'Autonomie':
-                if '/' in parts[3]:
-                    everyTeacher =parts[3].split('/')
+                if '/' in prof:
+                    everyTeacher =prof.split('/')
                     for teacher in everyTeacher:
                         professeurs.add(teacher.strip())
                         cours.append((parts[0], parts[1], teacher.strip(), last))
                 else:
-                    professeurs.add(parts[3])
-                    cours.append((parts[0], parts[1], parts[3], last))
+                    professeurs.add(prof)
+                    cours.append((parts[0], parts[1], prof, last))
             else:
                 professeurs.add('Autonomie')
                 cours.append((parts[0], parts[1], 'Autonomie', last))
@@ -56,17 +58,18 @@ def parse_calendar_file(file_content: bytes):
             profDup.append(professeur)
             profDup.append(professeur)
             profDup.append(professeur)
+            profDup.append(professeur)
+            profDup.append(professeur)
 
             teamsDisplay.append('AMPHI')
             teamsDisplay.append('TD')
             teamsDisplay.append('TP')
-            
-        teams = list(set(teamsDisplay))
-        if 'AMPHI' in teams:
-            teams.remove('AMPHI')
-        teams.append('COURS')
-        teams.sort()
-        
+            teamsDisplay.append('DS')
+            teamsDisplay.append('Autonomie')
+
+        teams = teamsDisplay[0:5]
+        teams.insert(teams.index('AMPHI'), 'COURS')
+        teams.remove('AMPHI')
         csv_content = str()
 
         csv_content += ','.join([''] + profDup) + '\n'
@@ -124,7 +127,6 @@ def extract_calendar_data():
         parts = text.split(' - ') 
         if parts[1] != 'Autonomie':
             if '/' in parts[3]:
-                print(parts[3])
                 everyTeacher =parts[3].split('/')
                 for teacher in everyTeacher:
                     professeurs.add(teacher.strip())
@@ -176,8 +178,17 @@ def extract_calendar_data():
     
     # Parse CSV string into list of dictionaries
     parsed_data = parse_csv_string(csv_content)
-    
+
     return parsed_data
+
+def from_text_to_dict(desc: list):
+    """
+    Extract professor names from event description.
+    """
+    Interest_data=desc[1:3]
+    for i in range(len(Interest_data)):
+        if 'Prof' in Interest_data[i]:
+            return Interest_data[i][5:]
 
 
 def parse_csv_string(csv_string: str):
@@ -217,4 +228,5 @@ def parse_csv_string(csv_string: str):
         data.append(row_dict)
     
     return data
+
 

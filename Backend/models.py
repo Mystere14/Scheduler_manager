@@ -231,7 +231,7 @@ class compare_scheduler(SQLModel, table=True):
     code_ens: str
     code_res_sae: str
     type_ens: str
-    heures: int
+    heures: float
 
 class compare_schedulerRead(SQLModel):
     """
@@ -241,7 +241,7 @@ class compare_schedulerRead(SQLModel):
     code_ens: str
     code_res_sae: str
     type_ens: str
-    heures: int
+    heures: float
 
 class compare_schedulerCreate(SQLModel):
     """
@@ -251,7 +251,7 @@ class compare_schedulerCreate(SQLModel):
     code_ens: str
     code_res_sae: str
     type_ens: str
-    heures: int
+    heures: float
 
 class compare_schedulerUpdate(SQLModel):
     """
@@ -261,4 +261,4 @@ class compare_schedulerUpdate(SQLModel):
     code_ens: str
     code_res_sae: str
     type_ens: str
-    heures: int
+    heures: float

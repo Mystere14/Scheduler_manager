@@ -4,14 +4,14 @@ import './WelcomePage.css';
 
 interface WelcomePageProps {
   onNavigateToScheduler?: () => void;
-  onNavigateToValidaty?: () => void;
+  onNavigateToValidation?: () => void;
 }
 
 export const WelcomePage: React.FC<WelcomePageProps> = () => {
   const navigate = useNavigate();
 
   const handleVerifyConstraints = () => {
-    navigate('/validate');
+    navigate('/validation');
   };
 
   const handleCreateSchedule = () => {

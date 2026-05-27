@@ -6,14 +6,14 @@ import { ValidatyPage } from './page/ValidatyPage/ValidationPage'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<'welcome' | 'scheduler' | 'validaty'>('welcome')
+  const [currentPage, setCurrentPage] = useState<'welcome' | 'scheduler' | 'validation'>('welcome')
 
   const handleNavigateToScheduler = () => {
     setCurrentPage('scheduler')
   }
 
   const handleNavigateToValidaty = () => {
-    setCurrentPage('validaty')
+    setCurrentPage('validation')
   }
 
   return (    
@@ -21,7 +21,7 @@ function App() {
       <Routes>
         <Route path="/" element={<WelcomePage />} />
         <Route path="/scheduler" element={<SchedulerPage />} />
-        <Route path="/validate" element={<ValidatyPage />} />
+        <Route path="/validation" element={<ValidatyPage />} />
       </Routes>
     </BrowserRouter>
   )
