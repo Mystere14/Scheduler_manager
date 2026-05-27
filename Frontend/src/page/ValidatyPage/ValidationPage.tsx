@@ -69,14 +69,24 @@ export const ValidatyPage = () => {
           </div>
           {(firstImport && secondImport) && (
             <div className="data-tables">
-              {loading && <p>Chargement de la comparaison...</p>}
-              {error && <p style={{ color: 'red' }}>Erreur: {error}</p>}
-              {comparisonResult && (
+              {loading && (
+                <div className="empty-state">
+                  <div className="empty-state-icon">⏳</div>
+                  <div className="empty-state-text">Chargement de la comparaison...</div>
+                </div>
+              )}
+              {error && (
+                <div className="empty-state" style={{ borderColor: '#fca5a5', background: '#fef2f2' }}>
+                  <div className="empty-state-icon">❌</div>
+                  <div className="empty-state-text" style={{ color: '#dc2626' }}>Erreur: {error}</div>
+                </div>
+              )}
+              {comparisonResult && !loading && !error && (
                 <div className="comparison-results">
                   <h2>Résultat de la comparaison</h2>
                   
                   {comparisonResult.length === 0 ? (
-                    <p className="no-differences">Tout les créneaux ont bien été placés</p>
+                    <p className="no-differences">✓ Tous les créneaux ont bien été placés</p>
                   ) : (
                     <div className={`sections-container ${comparisonResult.filter((item: any) => item.heures > 0).length === 0 || comparisonResult.filter((item: any) => item.heures < 0).length === 0 ? 'single-section' : ''}`}>
                       {comparisonResult.filter((item: any) => item.heures > 0).length > 0 && (
@@ -107,7 +117,7 @@ export const ValidatyPage = () => {
                       {/* Créneaux surplacés (heures négatives) */}
                       {comparisonResult.filter((item: any) => item.heures < 0).length > 0 && (
                         <div className="section-overplaced">
-                          <h3>Débordement de créneaux</h3>
+                          <h3>Créneaux supplémentaires</h3>
                           <div className="results-header">
                             <div className="header-cell">Code_Ens</div>
                             <div className="header-cell">Code_Res_SAE</div>
