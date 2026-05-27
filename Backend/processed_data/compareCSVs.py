@@ -29,6 +29,7 @@ def compare_schedulers_from_spreadsheets(contentSchedulerPlanned: bytes, content
     delete_compare_scheduler()
     
     for session in differences:
+        print(session[3])
         new_compare_scheduler = compare_scheduler(
             code_ens=session[0],
             type_ens=session[1],
@@ -110,7 +111,7 @@ def preprocessed_scheduler_planned(processed_data: pd.DataFrame):
         type_ens = row['type_ens'].strip()
         if type_ens == 'C':
             type_ens = 'AMPHI'
-        sessionPlanned.append((row['code_ens'].strip(), type_ens.strip(), session_name[row['code_res_sae']], float(row['volume'])))
+        sessionPlanned.append((row['code_ens'].strip(), type_ens.strip(), session_name[row['code_res_sae'].strip()], float(row['volume'])))
     # (prof, type_ens, matière, heures) 
     return sessionPlanned
 
