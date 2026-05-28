@@ -3,21 +3,28 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 0.4rem;
   border-bottom: 1px solid #f3f4f6;
-  padding: 0.35rem 0.4rem;
+  padding: 0.25rem 0.4rem;
   align-items: center;
-  background-color: #fff;
+  background-color: transparent;
   transition: background-color 0.2s ease;
+  width: 100%;
 }
 
 .line-compare:hover {
   background-color: #f9fafb;
 }
 
+/* Override hover when inside colored course row */
+.course-row.course-unplaced-issue .line-compare:hover,
+.course-row.course-extra-issue .line-compare:hover {
+  background-color: inherit;
+}
+
 .line-compare-cell {
   padding: 0 0.2rem;
   text-align: left;
-  font-size: 0.82rem;
-  color: #374151;
+  font-size: 0.8rem;
+  color: #6b7280;
 }
 
 /* Style pour situation avec deux sections côte à côte */
