@@ -32,7 +32,7 @@
 }
 
 .imported-file-container {
-  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  background: linear-gradient(135deg, #f3f4f6 0%, #f0f1f3 100%);
   border: 1px solid #e5e7eb;
   border-radius: 6px;
   padding: 0.65rem 0.75rem;
@@ -43,11 +43,6 @@
   min-height: 60px;
   flex: 1;
   transition: all 0.2s ease;
-}
-
-.imported-file-container:hover {
-  background: linear-gradient(135deg, #f0f9ff 0%, #ecfdf5 100%);
-  border-color: #10b981;
 }
 
 .imported-file-container:hover {
@@ -86,11 +81,6 @@
   flex-shrink: 0;
   box-shadow: 0 2px 4px rgba(16, 185, 129, 0.15);
   transition: all 0.2s ease;
-}
-
-.file-icon:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.25);
 }
 
 .file-icon:hover {

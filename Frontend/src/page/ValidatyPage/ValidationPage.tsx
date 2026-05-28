@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ImportArea } from '../../component/ImportArea/ImportArea';
 import { DataTable } from '../../component/DataTable/DataTable';
 import { LineCompare } from '../../component/LineCompare/LineCompare';
+import { SessionList } from '../../feature/SessionList/SessionList';
 import './ValidationPage.css';
 import api from '../../services/api';
 
@@ -85,11 +86,11 @@ export const ValidatyPage = () => {
                 <div className="comparison-results">
                   <h2>Résultat de la comparaison</h2>
                   
-                  {comparisonResult.length === 0 ? (
+                  {comparisonResult.filter((item: any) => item.real_session === false).length === 0 ? (
                     <p className="no-differences">✓ Tous les créneaux ont bien été placés</p>
                   ) : (
-                    <div className={`sections-container ${comparisonResult.filter((item: any) => item.heures > 0).length === 0 || comparisonResult.filter((item: any) => item.heures < 0).length === 0 ? 'single-section' : ''}`}>
-                      {comparisonResult.filter((item: any) => item.heures > 0).length > 0 && (
+                    <div className={`sections-container ${comparisonResult.filter((item: any) => item.heures > 0 && item.real_session === false).length === 0 || comparisonResult.filter((item: any) => item.heures < 0 && item.real_session === false).length === 0 ? 'single-section' : ''}`}>
+                      {comparisonResult.filter((item: any) => item.heures > 0 && item.real_session === false).length > 0 && (
                         <div className="section-unplaced">
                           <h3>Créneaux non-placés</h3>
                           <div className="results-header">
@@ -100,7 +101,7 @@ export const ValidatyPage = () => {
                           </div>
                           <div className="results-list">
                             {comparisonResult
-                              .filter((item: any) => item.heures > 0)
+                              .filter((item: any) => item.heures > 0 && item.real_session === false)
                               .map((item: any, index: number) => (
                                 <LineCompare
                                   key={`unplaced-${index}`}
@@ -115,7 +116,7 @@ export const ValidatyPage = () => {
                       )}
 
                       {/* Créneaux surplacés (heures négatives) */}
-                      {comparisonResult.filter((item: any) => item.heures < 0).length > 0 && (
+                      {comparisonResult.filter((item: any) => item.heures < 0 && item.real_session === false).length > 0 && (
                         <div className="section-overplaced">
                           <h3>Créneaux supplémentaires</h3>
                           <div className="results-header">
@@ -126,7 +127,7 @@ export const ValidatyPage = () => {
                           </div>
                           <div className="results-list">
                             {comparisonResult
-                              .filter((item: any) => item.heures < 0)
+                              .filter((item: any) => item.heures < 0 && item.real_session === false)
                               .map((item: any, index: number) => (
                                 <LineCompare
                                   key={`overplaced-${index}`}
@@ -142,6 +143,9 @@ export const ValidatyPage = () => {
                     </div>
                   )}
                 </div>
+              )}
+              {comparisonResult && !loading && !error && (
+                <SessionList comparisonResult={comparisonResult} />
               )}
             </div>
           )}

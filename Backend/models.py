@@ -232,6 +232,7 @@ class compare_scheduler(SQLModel, table=True):
     code_res_sae: str
     type_ens: str
     heures: float
+    real_session: bool = Field(default=False)
 
 class compare_schedulerRead(SQLModel):
     """
@@ -242,6 +243,7 @@ class compare_schedulerRead(SQLModel):
     code_res_sae: str
     type_ens: str
     heures: float
+    real_session: bool = Field(default=False)
 
 class compare_schedulerCreate(SQLModel):
     """
@@ -252,6 +254,7 @@ class compare_schedulerCreate(SQLModel):
     code_res_sae: str
     type_ens: str
     heures: float
+    real_session: bool = Field(default=False)
 
 class compare_schedulerUpdate(SQLModel):
     """
@@ -262,3 +265,4 @@ class compare_schedulerUpdate(SQLModel):
     code_res_sae: str
     type_ens: str
     heures: float
+    real_session: bool = Field(default=False)

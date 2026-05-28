@@ -3,6 +3,7 @@ import csv
 from io import StringIO
 import json
 import os
+import copy
 
 from Backend.processed_data.sessionName import session_name
 import pandas as pd
@@ -15,26 +16,38 @@ def compare_schedulers_from_spreadsheets(contentSchedulerPlanned: bytes, content
     
     sessionsPlanned =preprocessed_data_to_csv(contentSchedulerPlanned, "scheduler_planned.csv")
     sessionsPlaced =preprocessed_data_to_csv(contentSchedulerPlaced, "scheduler_placed.csv")
-    
-    print("sessionsPlanned:", sessionsPlanned)
-    print("sessionsPlaced:", sessionsPlaced)
 
-    # Single comparison: planned vs placed
-    # Positive difference = unplaced (planned but not placed)
-    # Negative difference = overplaced (placed but not planned)
-    differences = comparaison([list(s) for s in sessionsPlanned], [list(s) for s in sessionsPlaced])
+    # Add line here to register every sesssion 
+    sessionsPlanned=[list(s) for s in sessionsPlanned]
+    sessionsPlaced=[list(s) for s in sessionsPlaced]
 
-    print("differences:", differences)
+    sessionsPlaced=[[session[0],session[1],session[2],-session[3]] for session in sessionsPlaced]
 
     delete_compare_scheduler()
-    
-    for session in differences:
-        print(session[3])
+
+    for session in sessionsPlaced+sessionsPlanned:
         new_compare_scheduler = compare_scheduler(
             code_ens=session[0],
             type_ens=session[1],
             code_res_sae=session[2],
-            heures=session[3]
+            heures=session[3],
+            real_session=True
+        )
+        create_compare_scheduler(new_compare_scheduler)
+
+
+    # Single comparison: planned vs placed
+    # Positive difference = unplaced (planned but not placed)
+    # Negative difference = overplaced (placed but not planned)
+    differences = comparaison(sessionsPlanned,sessionsPlaced)
+    
+    for session in differences:
+        new_compare_scheduler = compare_scheduler(
+            code_ens=session[0],
+            type_ens=session[1],
+            code_res_sae=session[2],
+            heures=session[3],
+            real_session=False
         )
         create_compare_scheduler(new_compare_scheduler)
 
@@ -46,28 +59,29 @@ def comparaison(sessionsA, sessionsB):
     Also includes sessions from B that have no match in A (as negative values).
     """
     # Convert tuples to lists so they can be modified
-    sessionsA = [list(session) for session in sessionsA]
-    sessionsB = [list(session) for session in sessionsB]
-    
+
+    sessionsAInstance=copy.deepcopy(sessionsA)
     # Track which B sessions have been matched
-    matched_indices = set()
-    
-    for sessionA in sessionsA:
+
+    for sessionA in sessionsAInstance:
         for i, sessionB in enumerate(sessionsB):
             if(sessionA[0]==sessionB[0] and sessionA[1]==sessionB[1] and sessionA[2]==sessionB[2]):
                 # Match found: subtract placed hours from planned hours
-                sessionA[3] -= sessionB[3]
-                matched_indices.add(i)
+                sessionA[3] += sessionB[3]
                 break
+
+    for sessionB in sessionsB:
+        for i, sessionA in enumerate(sessionsA):
+            if(sessionA[0]==sessionB[0] and sessionA[1]==sessionB[1] and sessionA[2]==sessionB[2]):
+                # Match found: subtract placed hours from planned hours
+                #print("here it is3: ",sessionA, sessionB)
+                sessionB[3] += sessionA[3]
+                #print("here it is4: ",sessionB)
+                break
+
+    result= sessionsAInstance + sessionsB
     
-    # Keep only A sessions with non-zero difference
-    result = [session for session in sessionsA if session[3] != 0]
-    
-    # Add B sessions that have no match in A (as negative values - overplaced)
-    for i, sessionB in enumerate(sessionsB):
-        if i not in matched_indices:
-            # No match found in A - this is overplaced
-            result.append([sessionB[0], sessionB[1], sessionB[2], -sessionB[3]])
+    result = [session for session in result if session[3] != 0.0]
     
     return result
 
@@ -124,8 +138,8 @@ def preprocessed_scheduler_placed(processed_data: pd.DataFrame):
         if column == 'matière':
             continue
         session = processed_data[processed_data[column] != ''].index.tolist()
-        hours = processed_data[processed_data[column] != ''][column].tolist()
-        for i in range(len(session)):
+        hours = processed_data[processed_data[column] != ''][column].tolist() 
+        for i in range(len(hours)):
             teacher = column.split(' - ')[0].strip()
             type_ens = column.split(' - ')[1].strip()
             sessionPlaced.append((teacher.strip(), type_ens.strip(), dictMatiere[session[i]], float(hours[i])))
