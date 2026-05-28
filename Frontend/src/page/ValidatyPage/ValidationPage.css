@@ -191,7 +191,7 @@
 
 .results-header {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 0.4rem;
   padding: 0.5rem 0.4rem;
   background-color: #f3f4f6;

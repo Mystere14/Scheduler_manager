@@ -96,6 +96,7 @@ export const ValidatyPage = () => {
                           <div className="results-header">
                             <div className="header-cell">Code_Ens</div>
                             <div className="header-cell">Code_Res_SAE</div>
+                            <div className="header-cell">Semaine</div>
                             <div className="header-cell">Type_ens</div>
                             <div className="header-cell">Heure</div>
                           </div>
@@ -107,6 +108,7 @@ export const ValidatyPage = () => {
                                   key={`unplaced-${index}`}
                                   code_ens={item.code_ens}
                                   code_res_sae={item.code_res_sae}
+                                  semaine={item.semaine}
                                   type_ens={item.type_ens}
                                   heure={item.heures}
                                 />
@@ -122,6 +124,7 @@ export const ValidatyPage = () => {
                           <div className="results-header">
                             <div className="header-cell">Code_Ens</div>
                             <div className="header-cell">Code_Res_SAE</div>
+                            <div className="header-cell">Semaine</div>
                             <div className="header-cell">Type_ens</div>
                             <div className="header-cell">Heure</div>
                           </div>
@@ -133,6 +136,7 @@ export const ValidatyPage = () => {
                                   key={`overplaced-${index}`}
                                   code_ens={item.code_ens}
                                   code_res_sae={item.code_res_sae}
+                                  semaine={item.semaine}
                                   type_ens={item.type_ens}
                                   heure={item.heures*-1}
                                 />

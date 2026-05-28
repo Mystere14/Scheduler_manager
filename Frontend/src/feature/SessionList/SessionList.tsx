@@ -172,6 +172,7 @@ export const SessionList: React.FC<SessionListProps> = ({ comparisonResult }) =>
                             <LineCompare
                               code_ens={course.code_ens}
                               code_res_sae={course.code_res_sae}
+                              semaine={course.semaine}
                               type_ens={course.type_ens}
                               heure={course.heures}
                             />
@@ -190,6 +191,7 @@ export const SessionList: React.FC<SessionListProps> = ({ comparisonResult }) =>
                     <div className="results-header">
                       <div className="header-cell">Code_Ens</div>
                       <div className="header-cell">Code_Res_SAE</div>
+                      <div className="header-cell">Semaine</div>
                       <div className="header-cell">Type_ens</div>
                       <div className="header-cell">Heure</div>
                     </div>
@@ -203,6 +205,7 @@ export const SessionList: React.FC<SessionListProps> = ({ comparisonResult }) =>
                             <LineCompare
                               code_ens={course.code_ens}
                               code_res_sae={course.code_res_sae}
+                              semaine={course.semaine}
                               type_ens={course.type_ens}
                               heure={Math.abs(course.heures)}
                             />
