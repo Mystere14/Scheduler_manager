@@ -230,6 +230,7 @@ class compare_scheduler(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     code_ens: str
     code_res_sae: str
+    semaine: str
     type_ens: str
     heures: float
     real_session: bool = Field(default=False)
@@ -241,6 +242,7 @@ class compare_schedulerRead(SQLModel):
     id: Optional[int] = Field(default=None, primary_key=True)
     code_ens: str
     code_res_sae: str
+    semaine: str
     type_ens: str
     heures: float
     real_session: bool = Field(default=False)
@@ -252,6 +254,7 @@ class compare_schedulerCreate(SQLModel):
     id: Optional[int] = Field(default=None, primary_key=True)
     code_ens: str
     code_res_sae: str
+    semaine: str
     type_ens: str
     heures: float
     real_session: bool = Field(default=False)
@@ -263,6 +266,7 @@ class compare_schedulerUpdate(SQLModel):
     id: Optional[int] = Field(default=None, primary_key=True)
     code_ens: str
     code_res_sae: str
+    semaine: str
     type_ens: str
     heures: float
     real_session: bool = Field(default=False)

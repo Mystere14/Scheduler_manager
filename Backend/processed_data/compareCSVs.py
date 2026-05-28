@@ -1,3 +1,5 @@
+from datetime import date
+
 from icalendar import Calendar
 import csv
 from io import StringIO
@@ -21,7 +23,7 @@ def compare_schedulers_from_spreadsheets(contentSchedulerPlanned: bytes, content
     sessionsPlanned=[list(s) for s in sessionsPlanned]
     sessionsPlaced=[list(s) for s in sessionsPlaced]
 
-    sessionsPlaced=[[session[0],session[1],session[2],-session[3]] for session in sessionsPlaced]
+    sessionsPlaced=[[session[0],session[1],session[2],session[3],-session[4]] for session in sessionsPlaced]
 
     delete_compare_scheduler()
 
@@ -29,8 +31,9 @@ def compare_schedulers_from_spreadsheets(contentSchedulerPlanned: bytes, content
         new_compare_scheduler = compare_scheduler(
             code_ens=session[0],
             type_ens=session[1],
-            code_res_sae=session[2],
-            heures=session[3],
+            code_res_sae=session[3],
+            semaine=session[2],
+            heures=session[4],
             real_session=True
         )
         create_compare_scheduler(new_compare_scheduler)
@@ -45,8 +48,9 @@ def compare_schedulers_from_spreadsheets(contentSchedulerPlanned: bytes, content
         new_compare_scheduler = compare_scheduler(
             code_ens=session[0],
             type_ens=session[1],
-            code_res_sae=session[2],
-            heures=session[3],
+            code_res_sae=session[3],
+            semaine=session[2],
+            heures=session[4],
             real_session=False
         )
         create_compare_scheduler(new_compare_scheduler)
@@ -65,23 +69,21 @@ def comparaison(sessionsA, sessionsB):
 
     for sessionA in sessionsAInstance:
         for i, sessionB in enumerate(sessionsB):
-            if(sessionA[0]==sessionB[0] and sessionA[1]==sessionB[1] and sessionA[2]==sessionB[2]):
+            if(sessionA[0]==sessionB[0] and sessionA[1]==sessionB[1] and sessionA[2]==sessionB[2] and sessionA[3]==sessionB[3]):
                 # Match found: subtract placed hours from planned hours
-                sessionA[3] += sessionB[3]
+                sessionA[4] += sessionB[4]
                 break
 
     for sessionB in sessionsB:
         for i, sessionA in enumerate(sessionsA):
-            if(sessionA[0]==sessionB[0] and sessionA[1]==sessionB[1] and sessionA[2]==sessionB[2]):
-                # Match found: subtract placed hours from planned hours
-                #print("here it is3: ",sessionA, sessionB)
-                sessionB[3] += sessionA[3]
-                #print("here it is4: ",sessionB)
+            if(sessionA[0]==sessionB[0] and sessionA[1]==sessionB[1] and sessionA[2]==sessionB[2] and sessionA[3]==sessionB[3]):
+
+                sessionB[4] += sessionA[4]
                 break
 
     result= sessionsAInstance + sessionsB
     
-    result = [session for session in result if session[3] != 0.0]
+    result = [session for session in result if session[4] != 0.0]
     
     return result
 
@@ -110,11 +112,11 @@ def aggregate_sessions(sessions):
     """
     aggregated = {}
     for session in sessions:
-        key = (session[0], session[1], session[2])
+        key = (session[0], session[1], session[2], session[3])
         if key in aggregated:
-            aggregated[key] += session[3]
+            aggregated[key] += session[4]
         else:
-            aggregated[key] = session[3]
+            aggregated[key] = session[4]
     
     return [(*key, value) for key, value in aggregated.items()]
 
@@ -125,13 +127,17 @@ def preprocessed_scheduler_planned(processed_data: pd.DataFrame):
         type_ens = row['type_ens'].strip()
         if type_ens == 'C':
             type_ens = 'AMPHI'
-        sessionPlanned.append((row['code_ens'].strip(), type_ens.strip(), session_name[row['code_res_sae'].strip()], float(row['volume'])))
-    # (prof, type_ens, matière, heures) 
+        sessionPlanned.append((row['code_ens'].strip(), type_ens.strip(), row['semaine'].strip(), session_name[row['code_res_sae'].strip()], float(row['volume'])))
+    # (prof, type_ens, année-semaine, matière, heures) 
     return sessionPlanned
 
 def preprocessed_scheduler_placed(processed_data: pd.DataFrame):
     
-    dictMatiere = processed_data['matière'].map(lambda x: x.strip()).tolist()
+
+    dateAndSubject = processed_data['matière'].map(lambda x: x.strip()).tolist()
+    listSubject= [dateAndSubject[i].split(' ')[0] for i in range(len(dateAndSubject))]
+    listDate= [dateAndSubject[i].split(' ')[1] for i in range(len(dateAndSubject))]
+
 
     sessionPlaced = []
     for column in processed_data:
@@ -142,8 +148,7 @@ def preprocessed_scheduler_placed(processed_data: pd.DataFrame):
         for i in range(len(hours)):
             teacher = column.split(' - ')[0].strip()
             type_ens = column.split(' - ')[1].strip()
-            sessionPlaced.append((teacher.strip(), type_ens.strip(), dictMatiere[session[i]], float(hours[i])))
-            # (prof, type_ens, matière, heures) 
-
+            sessionPlaced.append((teacher.strip(), type_ens.strip(), listDate[session[i]], listSubject[session[i]], float(hours[i])))
+            # (prof, type_ens, année-semaine, matière, heures) 
     return sessionPlaced
 
