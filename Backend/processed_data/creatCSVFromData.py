@@ -21,6 +21,7 @@ def parse_calendar_file(file_content: bytes):
         professeurs = set()
         matieres = set()
         cours = list()
+        weeks= set()
 
         for event in response.walk('VEVENT'):
             summary = event.get('SUMMARY')
@@ -37,23 +38,28 @@ def parse_calendar_file(file_content: bytes):
             desc = event.get('DESCRIPTION')
             prof = from_text_to_dict(desc.split(' '))
             parts = text.split(' / ') #(DESCRIPTION.profs, SUMMARY[0], SUMMARY[1], last)
+            week = startDate.isocalendar().week
+            week = str(startDate.year) + '-' + str(week)
+
             if parts[1] != 'Autonomie':
                 if '/' in prof:
                     everyTeacher =prof.split('/')
                     for teacher in everyTeacher:
                         professeurs.add(teacher.strip())
-                        cours.append((parts[0], parts[1], teacher.strip(), last))
+                        cours.append((parts[0], parts[1], week, teacher.strip(), last))
                 else:
                     professeurs.add(prof)
-                    cours.append((parts[0], parts[1], prof, last))
+                    cours.append((parts[0], parts[1], week, prof, last))
             else:
                 professeurs.add('Autonomie')
-                cours.append((parts[0], parts[1], 'Autonomie', last))
+                cours.append((parts[0], parts[1], week, 'Autonomie', last))
             matieres.add(parts[0])
+            weeks.add(week)
 
         professeur = list(professeurs)
         profDup = list()
         teamsDisplay = list()
+
         for professeur in professeurs:
             profDup.append(professeur)
             profDup.append(professeur)
@@ -77,19 +83,20 @@ def parse_calendar_file(file_content: bytes):
         for row in matieres:
             cur_matiere = row
             line = []
-            for professeur in professeurs:
-                for team in teams:
-                    last= 0
-                    is_inserted = False 
-                    for cour in cours: 
-                        if cour[0] == cur_matiere and cour[1] == team and cour[2] == professeur:
-                            is_inserted = True
-                            last += cour[3]
-                    if is_inserted:
-                        line.append(str(last))
-                    else:
-                        line.append('')
-            csv_content += ','.join([row] + line) + '\n'
+            for week in weeks:
+                for professeur in professeurs:
+                    for team in teams:
+                        last= 0
+                        is_inserted = False 
+                        for cour in cours: 
+                            if cour[0] == cur_matiere and cour[1] == team and cour[2] == week and cour[3] == professeur:
+                                is_inserted = True
+                                last += cour[4]
+                        if is_inserted:
+                            line.append(str(last))
+                        else:
+                            line.append('')
+                csv_content += ','.join([row + ' ' + week] + line) + '\n'
         
         # Parse CSV string into list of dictionaries
         parsed_data = parse_csv_string(csv_content)

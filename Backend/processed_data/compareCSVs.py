@@ -73,10 +73,8 @@ def comparaison(sessionsA, sessionsB):
     for sessionB in sessionsB:
         for i, sessionA in enumerate(sessionsA):
             if(sessionA[0]==sessionB[0] and sessionA[1]==sessionB[1] and sessionA[2]==sessionB[2]):
-                # Match found: subtract placed hours from planned hours
-                #print("here it is3: ",sessionA, sessionB)
+
                 sessionB[3] += sessionA[3]
-                #print("here it is4: ",sessionB)
                 break
 
     result= sessionsAInstance + sessionsB
