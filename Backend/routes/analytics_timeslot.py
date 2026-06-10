@@ -6,7 +6,7 @@ from sqlalchemy import delete
 from sqlmodel import Session, select
 
 from database import engine
-from models import Absence, analytics_timeslot, analytics_timeslotCreate, analytics_timeslotRead, analytics_timeslotUpdate
+from models import analytics_timeslot, analytics_timeslotCreate, analytics_timeslotRead, analytics_timeslotUpdate
 from utils import save_to_db
 from processed_data.creatCSVFromData import extract_calendar_data, parse_calendar_file 
 from processed_data.compareCSVs import compare_schedulers_from_spreadsheets

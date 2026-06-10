@@ -11,7 +11,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from routes import absence, cours, code_ens, input_cours, compare_scheduler, analytics_timeslot
+from routes import compare_scheduler, analytics_timeslot
 
 
 @asynccontextmanager
@@ -63,10 +63,6 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(absence.router)
-app.include_router(cours.router)
-app.include_router(code_ens.router)
-app.include_router(input_cours.router)
 app.include_router(analytics_timeslot.router)
 app.include_router(compare_scheduler.router)
 
