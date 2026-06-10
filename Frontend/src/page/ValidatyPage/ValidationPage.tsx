@@ -84,7 +84,7 @@ export const ValidatyPage = () => {
               )}
               {comparisonResult && !loading && !error && (
                 <div className="comparison-results">
-                  <h2>Résultat de la comparaison</h2>
+                  <h2>Contrôle semaine {firstImport.data[0].semaine.split('-')[1]} - semestre {firstImport.data[0].code_res_sae.split('-')[1]} </h2>
                   
                   {comparisonResult.filter((item: any) => item.real_session === false).length === 0 ? (
                     <p className="no-differences">✓ Tous les créneaux ont bien été placés</p>
