@@ -50,7 +50,7 @@ class compare_scheduler(SQLModel, table=True):
     semaine: str
     type_ens: str
     heures: float
-    real_session: bool = Field(default=False)
+    is_valid: bool = Field(default=False)
 
 class compare_schedulerRead(SQLModel):
     """
@@ -62,7 +62,7 @@ class compare_schedulerRead(SQLModel):
     semaine: str
     type_ens: str
     heures: float
-    real_session: bool = Field(default=False)
+    is_valid: bool = Field(default=False)
 
 class compare_schedulerCreate(SQLModel):
     """
@@ -74,7 +74,7 @@ class compare_schedulerCreate(SQLModel):
     semaine: str
     type_ens: str
     heures: float
-    real_session: bool = Field(default=False)
+    is_valid: bool = Field(default=False)
 
 class compare_schedulerUpdate(SQLModel):
     """
@@ -86,4 +86,4 @@ class compare_schedulerUpdate(SQLModel):
     semaine: str
     type_ens: str
     heures: float
-    real_session: bool = Field(default=False)
+    is_valid: bool = Field(default=False)
