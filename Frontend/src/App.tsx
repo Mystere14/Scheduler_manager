@@ -1,19 +1,19 @@
 import './App.css'
 import { useState } from 'react'
-import { ValidatyPage } from './page/ValidatyPage/ValidationPage'
+import { ValidationPage } from './page/ValidationPage/ValidationPage'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 
 function App() {
   const [currentPage, setCurrentPage] = useState<'welcome' | 'validation'>('welcome')
 
-  const handleNavigateToValidaty = () => {
+  const handleNavigateToValidation = () => {
     setCurrentPage('validation')
   }
 
   return (    
   <BrowserRouter>
       <Routes>
-        <Route path="/validation" element={<ValidatyPage />} />
+        <Route path="/validation" element={<ValidationPage />} />
       </Routes>
     </BrowserRouter>
   )

@@ -1,11 +1,11 @@
-.validaty-page {
+.validation-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%);
   padding: 0;
   overflow: auto;
 }
 
-.validaty-container {
+.validation-container {
   max-width: 100%;
   margin: 0 auto;
   padding: 0.75rem 1rem;
@@ -41,7 +41,7 @@
   color: #666;
 }
 
-.validaty-content {
+.validation-content {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
@@ -310,7 +310,7 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .validaty-container {
+  .validation-container {
     padding: 0 1.5rem;
   }
 

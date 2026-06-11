@@ -19,39 +19,35 @@ def compare_schedulers_from_spreadsheets(contentSchedulerPlanned: bytes, content
     sessionsPlanned =preprocessed_data_to_csv(contentSchedulerPlanned, "scheduler_planned.csv")
     sessionsPlaced =preprocessed_data_to_csv(contentSchedulerPlaced, "scheduler_placed.csv")
 
+    print(f"Sessions Planned: {sessionsPlanned}")
+    print(f"Sessions Placed: {sessionsPlaced}")
     # Add line here to register every sesssion 
     sessionsPlanned=[list(s) for s in sessionsPlanned]
     sessionsPlaced=[list(s) for s in sessionsPlaced]
 
     sessionsPlaced=[[session[0],session[1],session[2],session[3],-session[4]] for session in sessionsPlaced]
 
+    differences = comparaison(sessionsPlanned,sessionsPlaced)
+    
     delete_compare_scheduler()
-
-    for session in sessionsPlaced+sessionsPlanned:
-        new_compare_scheduler = compare_scheduler(
-            code_ens=session[0],
-            type_ens=session[1],
-            code_res_sae=session[3],
-            semaine=session[2],
-            heures=session[4],
-            real_session=True
-        )
-        create_compare_scheduler(new_compare_scheduler)
 
 
     # Single comparison: planned vs placed
     # Positive difference = unplaced (planned but not placed)
     # Negative difference = overplaced (placed but not planned)
-    differences = comparaison(sessionsPlanned,sessionsPlaced)
     
-    for session in differences:
+    sessionsNotPlaced= [session for session in differences if session[4] > 0]
+
+    print(f"Differences: {differences}")
+    for session in sessionsPlaced + sessionsNotPlaced:
+        is_valid=not (session in differences)
         new_compare_scheduler = compare_scheduler(
             code_ens=session[0],
             type_ens=session[1],
             code_res_sae=session[3],
             semaine=session[2],
             heures=session[4],
-            real_session=False
+            is_valid=is_valid
         )
         create_compare_scheduler(new_compare_scheduler)
 
@@ -101,24 +97,8 @@ def preprocessed_data_to_csv(content_file: bytes, file_name: str):
     if file_name == "scheduler_placed.csv":
         everySession = preprocessed_scheduler_placed(processed_data)
 
-    # Aggregate sessions with same (code_ens, type_ens, code_res_sae)
-    everySession = aggregate_sessions(everySession)
-
     return everySession
 
-def aggregate_sessions(sessions):
-    """
-    Combine sessions with same (code_ens, type_ens, code_res_sae) by summing hours.
-    """
-    aggregated = {}
-    for session in sessions:
-        key = (session[0], session[1], session[2], session[3])
-        if key in aggregated:
-            aggregated[key] += session[4]
-        else:
-            aggregated[key] = session[4]
-    
-    return [(*key, value) for key, value in aggregated.items()]
 
 def preprocessed_scheduler_planned(processed_data: pd.DataFrame):
     sessionPlanned = []
