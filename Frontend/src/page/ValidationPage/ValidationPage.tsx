@@ -4,12 +4,17 @@ import './ValidationPage.css';
 import api from '../../services/api';
 import { Discipline } from '../../component/Discipline/Discipline';
 
+interface ValidationPage{
+  schedulerList: any[];
+  setSchedulerList: React.Dispatch<React.SetStateAction<any[]>>;
+}
+
 interface ImportedData {
   data: any[];
   fileName: string;
 }
 
-export const ValidationPage = () => {
+export const ValidationPage = ({ schedulerList, setSchedulerList }: ValidationPage) => {
   const [firstImport, setFirstImport] = useState<ImportedData | null>(null);
   const [secondImport, setSecondImport] = useState<ImportedData | null>(null);
   const [comparisonResult, setComparisonResult] = useState<any>(null);
@@ -34,9 +39,11 @@ export const ValidationPage = () => {
           await api.createAnalyticsTimeslotWithEachSpreadsheet(firstImport , secondImport);
           let data=await api.getCompareScheduler();
           setComparisonResult(data);
-          
           const uniqueCodes = [...new Set(data.map((r: any) => r.code_res_sae))];
           setComparisonResultUnique(uniqueCodes);
+          setSchedulerList(data);
+          
+          console.log(`Scheduler list:`, schedulerList);
         } catch (err) {
           setError(err instanceof Error ? err.message : 'Une erreur est survenue');
           console.error('Erreur lors de la comparaison:', err);
@@ -90,7 +97,7 @@ export const ValidationPage = () => {
                   <div className="comparison-results">
                     {
                       comparisonResultUnique.map((result: any) => (
-                        <Discipline code_sae={result} sessionList={comparisonResult.filter((r: any) => r.code_res_sae === result)} />
+                        <Discipline  key={result} code_sae={result} sessionList={comparisonResult.filter((r: any) => r.code_res_sae === result)} />
                       ))
                     }
                   </div>
