@@ -1,6 +1,7 @@
 import os
 import sys
 
+from Backend.routes import session
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from sqlmodel import create_engine
@@ -11,7 +12,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from routes import compare_scheduler, analytics_timeslot
+from Backend.routes import session
 
 
 @asynccontextmanager
@@ -63,8 +64,8 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(analytics_timeslot.router)
-app.include_router(compare_scheduler.router)
+app.include_router(a.router)
+app.include_router(session.router)
 
 @app.get("/")
 def read_root():

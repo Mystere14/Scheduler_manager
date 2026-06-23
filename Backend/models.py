@@ -39,7 +39,7 @@ class analytics_timeslotUpdate(SQLModel):
     id: Optional[int] = None
     data: Optional[List[dict]] = None
 
-class compare_scheduler(SQLModel, table=True):
+class session(SQLModel, table=True):
     """
     The difference between the two csv files (créneau prévu and créneau placé)
     """
@@ -52,21 +52,9 @@ class compare_scheduler(SQLModel, table=True):
     heures: float
     is_valid: bool = Field(default=False)
 
-class compare_schedulerRead(SQLModel):
+class sessionRead(SQLModel):
     """
-    Read schema for compare_scheduler 
-    """
-    id: Optional[int] = Field(default=None, primary_key=True)
-    code_ens: str
-    code_res_sae: str
-    semaine: str
-    type_ens: str
-    heures: float
-    is_valid: bool = Field(default=False)
-
-class compare_schedulerCreate(SQLModel):
-    """
-    Create schema for compare_scheduler 
+    Read schema for session 
     """
     id: Optional[int] = Field(default=None, primary_key=True)
     code_ens: str
@@ -76,9 +64,21 @@ class compare_schedulerCreate(SQLModel):
     heures: float
     is_valid: bool = Field(default=False)
 
-class compare_schedulerUpdate(SQLModel):
+class sessionCreate(SQLModel):
     """
-    Update schema for compare_scheduler 
+    Create schema for session 
+    """
+    id: Optional[int] = Field(default=None, primary_key=True)
+    code_ens: str
+    code_res_sae: str
+    semaine: str
+    type_ens: str
+    heures: float
+    is_valid: bool = Field(default=False)
+
+class sessionUpdate(SQLModel):
+    """
+    Update schema for session 
     """
     id: Optional[int] = Field(default=None, primary_key=True)
     code_ens: str

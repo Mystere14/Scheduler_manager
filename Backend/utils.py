@@ -1,7 +1,7 @@
 """
 Utility functions for the application.
 """
-from sqlmodel import Session
+from sqlmodel import session
 
 
 def save_to_db(session: Session, obj):
