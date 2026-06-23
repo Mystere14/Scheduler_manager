@@ -17,7 +17,7 @@ function App() {
   <BrowserRouter>
       <Routes>
         <Route path="/validation" element={<ValidationPage schedulerList={schedulerList} setSchedulerList={setSchedulerList} />} />
-        <Route path="/Session/:code_sae" element={<SchedulerList schedulerList={schedulerList}  />} />
+        <Route path="/session/:code_sae" element={<SchedulerList schedulerList={schedulerList}  />} />
       </Routes>
     </BrowserRouter>
   )

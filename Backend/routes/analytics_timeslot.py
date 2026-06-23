@@ -9,7 +9,7 @@ from database import engine
 from models import analytics_timeslot, analytics_timeslotCreate, analytics_timeslotRead, analytics_timeslotUpdate
 from utils import save_to_db
 from processed_data.creatCSVFromData import extract_calendar_data, parse_calendar_file 
-from processed_data.compareCSVs import compare_schedulers_from_spreadsheets
+from processed_data.compareCSVs import sessions_from_spreadsheets
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ def get_analytics_timeslot_by_teacher():
     """
     delete_analytics_timeslot()
     create_analytics_timeslot()
-    with Session(engine) as session:
+    with session(engine) as session:
         analytics_timeslot_records = session.exec(
             select(Analytics_timeslot)
         ).all()
@@ -75,7 +75,7 @@ def create_analytics_timeslot():
     new_analytics_timeslot_data = analytics_timeslotCreate(data=parsed_data)
     new_analytics_timeslot = analytics_timeslot(data=parsed_data)
 
-    with Session(engine) as session:
+    with session(engine) as session:
         try:
             save_to_db(session, new_analytics_timeslot)
             return new_analytics_timeslot_data
@@ -107,7 +107,7 @@ async def create_analytics_timeslot_from_vcalendar(file: UploadFile = File(...))
         new_analytics_timeslot_data = analytics_timeslotCreate(data=parsed_data)
         new_analytics_timeslot = analytics_timeslot(data=parsed_data)
 
-        with Session(engine) as session:
+        with session(engine) as session:
             try:
                 save_to_db(session, new_analytics_timeslot)
                 return new_analytics_timeslot_data
@@ -126,14 +126,14 @@ async def create_analytics_timeslot_from_vcalendar(file: UploadFile = File(...))
 @router.post("/withEachSpreadsheet", response_model=dict)
 async def create_analytics_timeslot_from_each_spreadsheet(FileschedulerPlanned: UploadFile = File(...),schedulerPlaced: UploadFile = File(...)):
     """
-    Create a new analytics_timeslot from csv files in purpose of creating a compare_scheduler.
+    Create a new analytics_timeslot from csv files in purpose of creating a session.
     """
     try:
         # Read the file content
         contentSchedulerPlanned = await FileschedulerPlanned.read()
         contentSchedulerPlaced = await schedulerPlaced.read()
             
-        compare_schedulers_from_spreadsheets(contentSchedulerPlanned, contentSchedulerPlaced)
+        session_from_spreadsheets(contentSchedulerPlanned, contentSchedulerPlaced)
         
         return {"message": "Comparison completed successfully"}
         
