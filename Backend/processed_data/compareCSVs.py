@@ -19,18 +19,15 @@ def compare_schedulers_from_spreadsheets(contentSchedulerPlanned: bytes, content
     sessionsPlanned =preprocessed_data_to_csv(contentSchedulerPlanned, "scheduler_planned.csv")
     sessionsPlaced =preprocessed_data_to_csv(contentSchedulerPlaced, "scheduler_placed.csv")
 
-    print(f"Sessions Planned: {sessionsPlanned}")
-    print(f"Sessions Placed: {sessionsPlaced}")
     # Add line here to register every sesssion 
     sessionsPlanned=[list(s) for s in sessionsPlanned]
     sessionsPlaced=[list(s) for s in sessionsPlaced]
 
     sessionsPlaced=[[session[0],session[1],session[2],session[3],-session[4]] for session in sessionsPlaced]
-
-    differences = comparaison(sessionsPlanned,sessionsPlaced)
     
-    delete_compare_scheduler()
+    differences = comparaison(sessionsPlanned,sessionsPlaced)
 
+    delete_compare_scheduler()
 
     # Single comparison: planned vs placed
     # Positive difference = unplaced (planned but not placed)
@@ -38,7 +35,6 @@ def compare_schedulers_from_spreadsheets(contentSchedulerPlanned: bytes, content
     
     sessionsNotPlaced= [session for session in differences if session[4] > 0]
 
-    print(f"Differences: {differences}")
     for session in sessionsPlaced + sessionsNotPlaced:
         is_valid=not (session in differences)
         new_compare_scheduler = compare_scheduler(
@@ -61,6 +57,7 @@ def comparaison(sessionsA, sessionsB):
     # Convert tuples to lists so they can be modified
 
     sessionsAInstance=copy.deepcopy(sessionsA)
+    sessionsBInstance=copy.deepcopy(sessionsB)
     # Track which B sessions have been matched
 
     for sessionA in sessionsAInstance:
@@ -70,14 +67,14 @@ def comparaison(sessionsA, sessionsB):
                 sessionA[4] += sessionB[4]
                 break
 
-    for sessionB in sessionsB:
+    for sessionB in sessionsBInstance:
         for i, sessionA in enumerate(sessionsA):
             if(sessionA[0]==sessionB[0] and sessionA[1]==sessionB[1] and sessionA[2]==sessionB[2] and sessionA[3]==sessionB[3]):
 
                 sessionB[4] += sessionA[4]
                 break
 
-    result= sessionsAInstance + sessionsB
+    result= sessionsAInstance + sessionsBInstance
     
     result = [session for session in result if session[4] != 0.0]
     
@@ -111,8 +108,8 @@ def preprocessed_scheduler_planned(processed_data: pd.DataFrame):
     # (prof, type_ens, année-semaine, matière, heures) 
     return sessionPlanned
 
+
 def preprocessed_scheduler_placed(processed_data: pd.DataFrame):
-    
 
     dateAndSubject = processed_data['matière'].map(lambda x: x.strip()).tolist()
     listSubject= [dateAndSubject[i].split(' ')[0] for i in range(len(dateAndSubject))]

@@ -9,7 +9,7 @@ export const SchedulerLine = ({ scheduler }: SchedulerLine) => {
         <div className="scheduler-line">
             <p >{scheduler[0].type_ens}</p>
             <p>{scheduler[0].code_ens}</p>
-            <p>{scheduler[0].is_valid}</p>
+            <p>{scheduler[0].is_valid ? "Valide" : "Non valide"}</p>
         </div>
     );
 };
