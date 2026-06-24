@@ -69,13 +69,13 @@ export const ValidationPage = ({ schedulerList, setSchedulerList }: ValidationPa
               title="Créneaux prévus (csv)"
               onDataImported={handleFirstImport}
               onDataCleared={() => setFirstImport(null)}
-              isUsingAPI={false}
+              isSchedulerPlanned={true}
             />
             <ImportArea
               title="Créneaux placés (vcs)"
               onDataImported={handleSecondImport}
               onDataCleared={() => setSecondImport(null)}
-              isUsingAPI={true}
+              isSchedulerPlanned={false}
             />
           </div>
           {(firstImport && secondImport) && (

@@ -8,11 +8,10 @@ function App() {
   const [currentPage, setCurrentPage] = useState<'validation'>('validation')
   const [schedulerList, setSchedulerList] = useState<any[]>([])
 
-
   const handleNavigateToValidation = () => {
     setCurrentPage('validation')
   }
-  console.log(schedulerList);
+
   return (    
   <BrowserRouter>
       <Routes>

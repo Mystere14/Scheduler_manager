@@ -10,6 +10,8 @@ from models import analytics_timeslot, analytics_timeslotCreate, analytics_times
 from utils import save_to_db
 from processed_data.creatCSVFromData import extract_calendar_data, parse_calendar_file 
 from processed_data.compareCSVs import lesson_from_spreadsheets
+from processed_data.preprocessedPlannedScheduler import preprocessSchedulerPlanned
+
 
 logger = logging.getLogger(__name__)
 
@@ -122,6 +124,45 @@ async def create_analytics_timeslot_from_vcalendar(file: UploadFile = File(...))
     except Exception as exc:
         logger.exception("Error processing vcalendar file")
         raise HTTPException(status_code=500, detail=f"Error processing file: {str(exc)}")
+
+
+@router.post("/preprocessedSchedulerPlanned", response_model=analytics_timeslotCreate)
+async def create_analytics_timeslot_by_preprocessed_scheduler_planned(file: UploadFile = File(...)):
+    """
+    Create a new analytics_timeslot from uploaded preprocessed scheduler planned file.
+    """
+    try:
+        # Read the file content
+        content = await file.read()
+        
+        preprocessed_data = preprocessSchedulerPlanned(content)
+        if preprocessed_data == -1:
+            logger.error("preprocessSchedulerPlanned returned -1, check logs above for details")
+            raise HTTPException(status_code=400, detail="Error preprocessing scheduler planned file")
+        if not preprocessed_data:
+            logger.error("preprocessSchedulerPlanned returned empty data")
+            raise HTTPException(status_code=400, detail="Scheduler planned file contains no valid data")
+        
+        new_analytics_timeslot_data = analytics_timeslotCreate(data=preprocessed_data)
+        new_analytics_timeslot = analytics_timeslot(data=preprocessed_data)
+
+        with Session(engine) as session:
+            try:
+                save_to_db(session, new_analytics_timeslot)
+                print(f"data: {new_analytics_timeslot_data}")
+                return new_analytics_timeslot_data
+            except IntegrityError as exc:
+                session.rollback()
+                logger.exception("Integrity error creating analytics_timeslot from preprocessed scheduler planned")
+                raise HTTPException(
+                    status_code=409, detail="Error creating analytics_timeslot"
+                ) from exc
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.exception("Error processing preprocessed scheduler planned file")
+        raise HTTPException(status_code=500, detail=f"Error processing file: {str(exc)}")
+
 
 @router.post("/withEachSpreadsheet", response_model=dict)
 async def create_analytics_timeslot_from_each_spreadsheet(FileschedulerPlanned: UploadFile = File(...),schedulerPlaced: UploadFile = File(...)):

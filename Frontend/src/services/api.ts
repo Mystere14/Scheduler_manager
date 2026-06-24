@@ -16,7 +16,7 @@ async function request(path: string, options: RequestInit = {}) {
     headers,
   });
 
-  const text = await res.text(); // 🔥 toujours lire brut
+  const text = await res.text(); 
 
   if (!res.ok) {
     throw new Error(`API ${res.status}: ${text}`);
@@ -42,6 +42,28 @@ export default {
       method: 'POST',
       body: JSON.stringify(analyticsTimeslotData),
     });
+  },
+  async createAnalyticsTimeslotByPreprocessedSchedulerPlanned(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const headers: Record<string, any> = {};
+    
+    const url = `${(window as any).__API_URL__}/analytics_timeslot/preprocessedSchedulerPlanned`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+
+    const text = await res.text();
+
+    if (!res.ok) {
+      throw new Error(`API ${res.status}: ${text}`);
+    }
+
+    if (!text) return null;
+    return JSON.parse(text);
   },
   async createAnalyticsTimeslotFromVcalendar(file: File) {
     const formData = new FormData();

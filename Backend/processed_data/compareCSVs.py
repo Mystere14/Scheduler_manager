@@ -7,7 +7,6 @@ import json
 import os
 import copy
 
-from processed_data.sessionName import session_name
 import pandas as pd
 
 from routes.lesson import create_lesson
@@ -100,13 +99,14 @@ def preprocessed_data_to_csv(content_file: bytes, file_name: str):
 
 
 def preprocessed_scheduler_planned(processed_data: pd.DataFrame):
+
     lessonPlanned = []
 
     for _, row in processed_data.iterrows():
         type_ens = row['type_ens'].strip()
         if type_ens == 'C':
             type_ens = 'AMPHI'
-        lessonPlanned.append((row['code_ens'].strip(), type_ens.strip(), row['semaine'].strip(), session_name[row['code_res_sae'].strip()], float(row['volume'])))
+        lessonPlanned.append((row['code_ens'].strip(), type_ens.strip(), row['semaine'].strip(), row['code_res_sae'].strip(), float(row['volume'])))
     # (prof, type_ens, année-semaine, matière, heures) 
     return lessonPlanned
 
