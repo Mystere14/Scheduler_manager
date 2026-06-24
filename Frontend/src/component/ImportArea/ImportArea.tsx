@@ -9,7 +9,7 @@ interface ImportAreaProps {
   title: string;
   onDataImported: (data: any[], fileName: string) => void;
   onDataCleared?: () => void;
-  isUsingAPI?: boolean;
+  isSchedulerPlanned?: boolean;
 }
 
 interface ImportedFile {
@@ -17,31 +17,25 @@ interface ImportedFile {
   fileName: string;
 }
 
-export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, onDataCleared, isUsingAPI }) => {
+export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, onDataCleared, isSchedulerPlanned }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importedFile, setImportedFile] = useState<ImportedFile | null>(null);
   const [showModal, setShowModal] = useState(false);
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: (results) => {
-        const fileName = file.name;
-        setImportedFile({
-          data: results.data as any[],
-          fileName
-        });
-        onDataImported(results.data as any[], fileName);
-      },
-      error: (error) => {
-        console.error('Erreur lors de la lecture du fichier CSV:', error);
-        alert('Erreur lors de la lecture du fichier CSV');
-      }
-    });
+    try {
+      const data = await api.createAnalyticsTimeslotByPreprocessedSchedulerPlanned(file);
+      console.log(`Data: ${data}`);
+      setImportedFile({ data: data.data, fileName: file.name });
+      onDataImported(data.data, file.name);
+      console.log(importedFile);
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi du fichier vCalendar:', error);
+      alert('Erreur lors de l\'envoi du fichier vCalendar');
+    }
   };
 
   const handleImportClick = () => {
@@ -65,17 +59,6 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
       alert('Erreur lors de l\'envoi du fichier vCalendar');
     }
   }
-
-  const handleAPIImport = async () => {
-    try {
-      const data = await api.getAnalyticsTimeslot();
-      setImportedFile({data,fileName: 'Données de l\'API'});
-      onDataImported(data, 'Données de l\'API');
-    } catch (error) {
-      console.error('Erreur lors de la récupération des données de l\'API:', error);
-      alert('Erreur lors de la récupération des données de l\'API');
-    }
-  };
 
   const handleResetFile = () => {
     onDataImported([], '');
@@ -142,7 +125,7 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
             </div>
 
             <div className="file-actions">
-              <button className="action-button import-button" onClick={isUsingAPI ? handleSendVcalendarToAPI : handleImportClick}>
+              <button className="action-button import-button" onClick={isSchedulerPlanned ? handleImportClick : handleSendVcalendarToAPI }>
                 Importer un fichier 
               </button>
             </div>
@@ -150,14 +133,11 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
             <input
               type="file"
               ref={fileInputRef}
-              onChange={isUsingAPI ? handleVcalendarFileSelect : handleFileSelect}
-              accept={isUsingAPI ? ".vcs" : ".csv"}
+              onChange={isSchedulerPlanned ?  handleFileSelect : handleVcalendarFileSelect}
+              accept={isSchedulerPlanned ? ".csv" : ".vcs"}
               className="hidden-file-input"
             />
           </div>
-          {isUsingAPI && (<button className="action-button import-button" onClick={handleAPIImport} style={{ display: 'none' }}>
-                Utiliser l'API
-          </button>)}
           </>
         ) : (
             <div className="imported-file-container">
