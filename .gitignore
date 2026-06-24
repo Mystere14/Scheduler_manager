@@ -7,6 +7,9 @@ Backend/__pycache__
 Backend/routes/__pycache__
 Backend/triggers/__pycache__
 Backend/processed_data/__pycache__
+Backend/triggers/__pycache__/*
+Backend/triggers/__pycache__/*
+Backend/processed_data/__pycache__/*
 */__pycache__
 Backend/*.pyc
 Backend/build
