@@ -3,6 +3,8 @@ import { ImportArea } from '../../component/ImportArea/ImportArea';
 import './ValidationPage.css';
 import api from '../../services/api';
 import { Discipline } from '../../component/Discipline/Discipline';
+import { SessionList } from '../../feature/SessionList/SessionList';
+
 
 interface ValidationPage{
   schedulerList: any[];
@@ -93,15 +95,7 @@ export const ValidationPage = ({ schedulerList, setSchedulerList }: ValidationPa
               {comparisonResult && !loading && !error && (
                 <div>
                   <h2>Contrôle semaine {firstImport.data[0].semaine.split('-')[1]} - semestre {firstImport.data[0].code_res_sae.split('-')[1]} </h2>
-
-                  <div className="comparison-results">
-                    {
-                      comparisonResultUnique.map((result: any) => (
-                        <Discipline  key={result} code_sae={result} sessionList={comparisonResult.filter((r: any) => r.code_res_sae === result)} />
-                      ))
-                    }
-                  </div>
-
+                  <SessionList comparisonResultUnique={comparisonResultUnique} comparisonResult={comparisonResult} />
                 </div>
               )}
             </div>

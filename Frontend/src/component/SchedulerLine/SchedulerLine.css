@@ -1,0 +1,52 @@
+.scheduler-line {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  padding: 14px;
+  margin: 14px 200px;
+
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  transition: all 0.2s ease;
+}
+
+.scheduler-line:hover {
+  background: #f3f4f6;
+}
+
+.scheduler-line p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Type d'enseignement */
+.scheduler-line p:first-child {
+  font-weight: 700;
+  color: #1f2937;
+  min-width: 80px;
+}
+
+/* Code enseignant */
+.scheduler-line p:nth-child(2) {
+  flex: 1;
+  text-align: center;
+  color: #4b5563;
+}
+
+/* Statut */
+.scheduler-line p:last-child {
+  font-weight: 700;
+  min-width: 120px;
+  text-align: right;
+}
+
+.status-valid {
+  color: #16a34a;
+}
+
+.status-invalid {
+  color: #dc2626;
+}
