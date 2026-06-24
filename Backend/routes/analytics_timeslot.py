@@ -9,7 +9,7 @@ from database import engine
 from models import analytics_timeslot, analytics_timeslotCreate, analytics_timeslotRead, analytics_timeslotUpdate
 from utils import save_to_db
 from processed_data.creatCSVFromData import extract_calendar_data, parse_calendar_file 
-from processed_data.compareCSVs import sessions_from_spreadsheets
+from processed_data.compareCSVs import lesson_from_spreadsheets
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ def get_analytics_timeslot_by_teacher():
     """
     delete_analytics_timeslot()
     create_analytics_timeslot()
-    with session(engine) as session:
+    with Session(engine) as session:
         analytics_timeslot_records = session.exec(
             select(Analytics_timeslot)
         ).all()
@@ -75,7 +75,7 @@ def create_analytics_timeslot():
     new_analytics_timeslot_data = analytics_timeslotCreate(data=parsed_data)
     new_analytics_timeslot = analytics_timeslot(data=parsed_data)
 
-    with session(engine) as session:
+    with Session(engine) as session:
         try:
             save_to_db(session, new_analytics_timeslot)
             return new_analytics_timeslot_data
@@ -107,7 +107,7 @@ async def create_analytics_timeslot_from_vcalendar(file: UploadFile = File(...))
         new_analytics_timeslot_data = analytics_timeslotCreate(data=parsed_data)
         new_analytics_timeslot = analytics_timeslot(data=parsed_data)
 
-        with session(engine) as session:
+        with Session(engine) as session:
             try:
                 save_to_db(session, new_analytics_timeslot)
                 return new_analytics_timeslot_data
@@ -133,7 +133,7 @@ async def create_analytics_timeslot_from_each_spreadsheet(FileschedulerPlanned: 
         contentSchedulerPlanned = await FileschedulerPlanned.read()
         contentSchedulerPlaced = await schedulerPlaced.read()
             
-        session_from_spreadsheets(contentSchedulerPlanned, contentSchedulerPlaced)
+        lesson_from_spreadsheets(contentSchedulerPlanned, contentSchedulerPlaced)
         
         return {"message": "Comparison completed successfully"}
         

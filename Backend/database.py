@@ -5,7 +5,7 @@ import logging
 
 
 from sqlalchemy import create_engine
-from sqlmodel import session, SQLModel
+from sqlmodel import SQLModel
 from config import settings
 
 import models 
@@ -29,6 +29,6 @@ def get_session():
     """
     Provide a transactional scope around a series of operations.
     """
-    with session(engine) as session:
+    with Session(engine) as session:
         yield session
 
