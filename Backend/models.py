@@ -39,7 +39,7 @@ class analytics_timeslotUpdate(SQLModel):
     id: Optional[int] = None
     data: Optional[List[dict]] = None
 
-class session(SQLModel, table=True):
+class lesson(SQLModel, table=True):
     """
     The difference between the two csv files (créneau prévu and créneau placé)
     """
@@ -52,21 +52,9 @@ class session(SQLModel, table=True):
     heures: float
     is_valid: bool = Field(default=False)
 
-class sessionRead(SQLModel):
+class lessonRead(SQLModel):
     """
-    Read schema for session 
-    """
-    id: Optional[int] = Field(default=None, primary_key=True)
-    code_ens: str
-    code_res_sae: str
-    semaine: str
-    type_ens: str
-    heures: float
-    is_valid: bool = Field(default=False)
-
-class sessionCreate(SQLModel):
-    """
-    Create schema for session 
+    Read schema for lesson 
     """
     id: Optional[int] = Field(default=None, primary_key=True)
     code_ens: str
@@ -76,9 +64,21 @@ class sessionCreate(SQLModel):
     heures: float
     is_valid: bool = Field(default=False)
 
-class sessionUpdate(SQLModel):
+class lessonCreate(SQLModel):
     """
-    Update schema for session 
+    Create schema for lesson 
+    """
+    id: Optional[int] = Field(default=None, primary_key=True)
+    code_ens: str
+    code_res_sae: str
+    semaine: str
+    type_ens: str
+    heures: float
+    is_valid: bool = Field(default=False)
+
+class lessonUpdate(SQLModel):
+    """
+    Update schema for lesson 
     """
     id: Optional[int] = Field(default=None, primary_key=True)
     code_ens: str

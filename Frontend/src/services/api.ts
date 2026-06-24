@@ -99,9 +99,9 @@ export default {
       method: 'DELETE',
     });
   },
-  // ===== session  =====
+  // ===== lesson  =====
   getCompareScheduler() {
-    return request('/session/', {
+    return request('/lesson/', {
       method: 'GET',
     });
   },

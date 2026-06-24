@@ -7,76 +7,78 @@ import json
 import os
 import copy
 
-from Backend.processed_data.sessionName import session_name
+from processed_data.sessionName import session_name
 import pandas as pd
 
+from routes.lesson import create_lesson
 
 
-def sessions_from_spreadsheets(contentSchedulerPlanned: bytes, contentSchedulerPlaced: bytes):
-    from Backend.models import session
-    from Backend.routes.session import create_session, delete_session
+
+def lesson_from_spreadsheets(contentSchedulerPlanned: bytes, contentSchedulerPlaced: bytes):
+    from models import lesson
+    from routes.lesson import create_lesson, delete_lesson
     
-    sessionsPlanned =preprocessed_data_to_csv(contentSchedulerPlanned, "scheduler_planned.csv")
-    sessionsPlaced =preprocessed_data_to_csv(contentSchedulerPlaced, "scheduler_placed.csv")
+    lessonsPlanned =preprocessed_data_to_csv(contentSchedulerPlanned, "scheduler_planned.csv")
+    lessonsPlaced =preprocessed_data_to_csv(contentSchedulerPlaced, "scheduler_placed.csv")
 
-    # Add line here to register every sesssion 
-    sessionsPlanned=[list(s) for s in sessionsPlanned]
-    sessionsPlaced=[list(s) for s in sessionsPlaced]
+    # Add line here to register every lesson 
+    lessonsPlanned=[list(s) for s in lessonsPlanned]
+    lessonsPlaced=[list(s) for s in lessonsPlaced]
 
-    sessionsPlaced=[[session[0],session[1],session[2],session[3],-session[4]] for session in sessionsPlaced]
+    lessonsPlaced=[[lesson[0],lesson[1],lesson[2],lesson[3],-lesson[4]] for lesson in lessonsPlaced]
     
-    differences = comparaison(sessionsPlanned,sessionsPlaced)
+    differences = comparaison(lessonsPlanned,lessonsPlaced)
 
-    delete_session()
+    delete_lesson()
 
     # Single comparison: planned vs placed
     # Positive difference = unplaced (planned but not placed)
     # Negative difference = overplaced (placed but not planned)
     
-    sessionsNotPlaced= [session for session in differences if session[4] > 0]
+    lessonsNotPlaced= [lesson for lesson in differences if lesson[4] > 0]
 
-    for session in sessionsPlaced + sessionsNotPlaced:
-        is_valid=not (session in differences)
-        new_session = session(
-            code_ens=session[0],
-            type_ens=session[1],
-            code_res_sae=session[3],
-            semaine=session[2],
-            heures=session[4],
+    for lessons in lessonsPlaced + lessonsNotPlaced:
+        is_valid=not (lessons in differences)
+        new_lesson = lesson(
+            code_ens=lessons[0],
+            type_ens=lessons[1],
+            code_res_sae=lessons[3],
+            semaine=lessons[2],
+            heures=lessons[4],
             is_valid=is_valid
         )
-        create_session(new_session)
+        create_lesson(new_lesson)
 
 
-def comparaison(sessionsA, sessionsB):
+def comparaison(lessonsA, lessonsB):
     """
-    Compare two lists of sessions.
-    Returns sessions from A with non-zero difference (after subtracting matching B sessions).
-    Also includes sessions from B that have no match in A (as negative values).
+    Compare two lists of lessons.
+    Returns lessons from A with non-zero difference (after subtracting matching B lessons).
+    Also includes lessons from B that have no match in A (as negative values).
     """
     # Convert tuples to lists so they can be modified
 
-    sessionsAInstance=copy.deepcopy(sessionsA)
-    sessionsBInstance=copy.deepcopy(sessionsB)
-    # Track which B sessions have been matched
+    lessonsAInstance=copy.deepcopy(lessonsA)
+    lessonsBInstance=copy.deepcopy(lessonsB)
+    # Track which B lessons have been matched
 
-    for sessionA in sessionsAInstance:
-        for i, sessionB in enumerate(sessionsB):
-            if(sessionA[0]==sessionB[0] and sessionA[1]==sessionB[1] and sessionA[2]==sessionB[2] and sessionA[3]==sessionB[3]):
+    for lessonA in lessonsAInstance:
+        for i, lessonB in enumerate(lessonsB):
+            if(lessonA[0]==lessonB[0] and lessonA[1]==lessonB[1] and lessonA[2]==lessonB[2] and lessonA[3]==lessonB[3]):
                 # Match found: subtract placed hours from planned hours
-                sessionA[4] += sessionB[4]
+                lessonA[4] += lessonB[4]
                 break
 
-    for sessionB in sessionsBInstance:
-        for i, sessionA in enumerate(sessionsA):
-            if(sessionA[0]==sessionB[0] and sessionA[1]==sessionB[1] and sessionA[2]==sessionB[2] and sessionA[3]==sessionB[3]):
+    for lessonB in lessonsBInstance:
+        for i, lessonA in enumerate(lessonsA):
+            if(lessonA[0]==lessonB[0] and lessonA[1]==lessonB[1] and lessonA[2]==lessonB[2] and lessonA[3]==lessonB[3]):
 
-                sessionB[4] += sessionA[4]
+                lessonB[4] += lessonA[4]
                 break
 
-    result= sessionsAInstance + sessionsBInstance
+    result= lessonsAInstance + lessonsBInstance
     
-    result = [session for session in result if session[4] != 0.0]
+    result = [lesson for lesson in result if lesson[4] != 0.0]
     
     return result
 
@@ -98,15 +100,15 @@ def preprocessed_data_to_csv(content_file: bytes, file_name: str):
 
 
 def preprocessed_scheduler_planned(processed_data: pd.DataFrame):
-    sessionPlanned = []
+    lessonPlanned = []
 
     for _, row in processed_data.iterrows():
         type_ens = row['type_ens'].strip()
         if type_ens == 'C':
             type_ens = 'AMPHI'
-        sessionPlanned.append((row['code_ens'].strip(), type_ens.strip(), row['semaine'].strip(), session_name[row['code_res_sae'].strip()], float(row['volume'])))
+        lessonPlanned.append((row['code_ens'].strip(), type_ens.strip(), row['semaine'].strip(), session_name[row['code_res_sae'].strip()], float(row['volume'])))
     # (prof, type_ens, année-semaine, matière, heures) 
-    return sessionPlanned
+    return lessonPlanned
 
 
 def preprocessed_scheduler_placed(processed_data: pd.DataFrame):
@@ -116,16 +118,16 @@ def preprocessed_scheduler_placed(processed_data: pd.DataFrame):
     listDate= [dateAndSubject[i].split(' ')[1] for i in range(len(dateAndSubject))]
 
 
-    sessionPlaced = []
+    lessonPlaced = []
     for column in processed_data:
         if column == 'matière':
             continue
-        session = processed_data[processed_data[column] != ''].index.tolist()
+        lesson = processed_data[processed_data[column] != ''].index.tolist()
         hours = processed_data[processed_data[column] != ''][column].tolist() 
         for i in range(len(hours)):
             teacher = column.split(' - ')[0].strip()
             type_ens = column.split(' - ')[1].strip()
-            sessionPlaced.append((teacher.strip(), type_ens.strip(), listDate[session[i]], listSubject[session[i]], float(hours[i])))
+            lessonPlaced.append((teacher.strip(), type_ens.strip(), listDate[lesson[i]], listSubject[lesson[i]], float(hours[i])))
             # (prof, type_ens, année-semaine, matière, heures) 
-    return sessionPlaced
+    return lessonPlaced
 
