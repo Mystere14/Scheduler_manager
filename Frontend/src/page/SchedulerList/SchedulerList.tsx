@@ -1,6 +1,8 @@
 import { SchedulerLine } from '../../component/SchedulerLine/SchedulerLine';
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import './SchedulerList.css';
+
 
 interface SchedulerList {
     schedulerList: any[];
@@ -32,8 +34,8 @@ export const SchedulerList = ({ schedulerList }: SchedulerList) => {
     );
 
     return (
-    <div className="discipline">
-        <p>{location.pathname.split('/')[2]}</p>
+    <div className="SchedulerList">
+        <p className="SchedulerList-title">{location.pathname.split('/')[2]}</p>
         {grouped.map((group: any) => (
         <div key={group.key}>
             <h3>{group.key}</h3>

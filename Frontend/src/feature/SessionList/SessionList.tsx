@@ -1,26 +1,16 @@
+import { Discipline } from '../../component/Discipline/Discipline';
 
-interface Discipline {
-    code_sae: string;
-    sessionList: any[];
+interface SessionList {
+    comparisonResultUnique: string[];
+    comparisonResult: any[];
 }
 
-export const Discipline = ({ code_sae, sessionList }: Discipline) => {
+export const SessionList = ({ comparisonResultUnique, comparisonResult }: SessionList) => {
     return (
-        <div className="discipline">
-            <h3 className="discipline-title">{code_sae}</h3>
-            <table className="discipline-table">                
-                <thead>
-                    {sessionList.map((session: any) => (
-                        <tr key={session.id}>
-                            <th>{session.type_ens + " - " + session.heures}</th>
-                            <th>{session.is_valid ? "Valide" : "Non valide"}</th>        
-                        </tr>
-                    ))}
-                    <tr>
-                        <th>Détails</th>
-                    </tr>
-                </thead>
-            </table>
-            
+        <div className="comparison-results">
+            {comparisonResultUnique.map((result: any) => (
+                    <Discipline key={result} code_sae={result} sessionList={comparisonResult.filter((r: any) => r.code_res_sae === result)} />
+                ))
+            }
         </div>
     )};

@@ -340,3 +340,105 @@
     padding: 0.5rem;
   }
 }
+
+/* Container des disciplines */
+.comparison-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+/* Card discipline */
+.discipline {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.discipline:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Titre */
+.schedulerList-title {
+  margin: 0 0 16px;
+  color: #1f2937;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+/* Tableau */
+.discipline-table {
+  width: 100%;
+  border-collapse: collapse;
+  flex: 1;
+}
+
+.discipline-table tr {
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.discipline-table tr:last-child {
+  border-bottom: none;
+}
+
+.discipline-table th,
+.discipline-table td {
+  padding: 12px;
+  text-align: left;
+  font-weight: 500;
+}
+
+.discipline-table th:first-child {
+  color: #374151;
+}
+
+.discipline-table th:last-child {
+  text-align: right;
+}
+
+/* Etat valide */
+.valid {
+  color: #16a34a;
+  font-weight: 700;
+}
+
+.invalid {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+/* Bouton détails */
+.details-button {
+  width: 100%;
+  margin-top: 16px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+  
+.details-button:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+  transform: translateY(-1px);
+}
+
+
