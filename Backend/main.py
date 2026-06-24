@@ -11,7 +11,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from routes import compare_scheduler, analytics_timeslot
+from routes import lesson, analytics_timeslot
 
 
 @asynccontextmanager
@@ -64,7 +64,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(analytics_timeslot.router)
-app.include_router(compare_scheduler.router)
+app.include_router(lesson.router)
 
 @app.get("/")
 def read_root():

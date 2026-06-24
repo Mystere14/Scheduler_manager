@@ -12,9 +12,9 @@ import pandas as pd
 
 
 
-def compare_schedulers_from_spreadsheets(contentSchedulerPlanned: bytes, contentSchedulerPlaced: bytes):
-    from Backend.models import compare_scheduler
-    from Backend.routes.compare_scheduler import create_compare_scheduler, delete_compare_scheduler
+def lessons_from_spreadsheets(contentSchedulerPlanned: bytes, contentSchedulerPlaced: bytes):
+    from Backend.models import lesson
+    from Backend.routes.lesson import create_lesson, delete_lesson
     
     sessionsPlanned =preprocessed_data_to_csv(contentSchedulerPlanned, "scheduler_planned.csv")
     sessionsPlaced =preprocessed_data_to_csv(contentSchedulerPlaced, "scheduler_placed.csv")
@@ -27,7 +27,7 @@ def compare_schedulers_from_spreadsheets(contentSchedulerPlanned: bytes, content
     
     differences = comparaison(sessionsPlanned,sessionsPlaced)
 
-    delete_compare_scheduler()
+    delete_lesson()
 
     # Single comparison: planned vs placed
     # Positive difference = unplaced (planned but not placed)
@@ -37,7 +37,7 @@ def compare_schedulers_from_spreadsheets(contentSchedulerPlanned: bytes, content
 
     for session in sessionsPlaced + sessionsNotPlaced:
         is_valid=not (session in differences)
-        new_compare_scheduler = compare_scheduler(
+        new_lesson = lesson(
             code_ens=session[0],
             type_ens=session[1],
             code_res_sae=session[3],
@@ -45,7 +45,7 @@ def compare_schedulers_from_spreadsheets(contentSchedulerPlanned: bytes, content
             heures=session[4],
             is_valid=is_valid
         )
-        create_compare_scheduler(new_compare_scheduler)
+        create_lesson(new_lesson)
 
 
 def comparaison(sessionsA, sessionsB):

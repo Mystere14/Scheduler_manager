@@ -9,7 +9,7 @@ from database import engine
 from models import analytics_timeslot, analytics_timeslotCreate, analytics_timeslotRead, analytics_timeslotUpdate
 from utils import save_to_db
 from processed_data.creatCSVFromData import extract_calendar_data, parse_calendar_file 
-from processed_data.compareCSVs import compare_schedulers_from_spreadsheets
+from processed_data.compareCSVs import lessons_from_spreadsheets
 
 logger = logging.getLogger(__name__)
 
@@ -126,14 +126,14 @@ async def create_analytics_timeslot_from_vcalendar(file: UploadFile = File(...))
 @router.post("/withEachSpreadsheet", response_model=dict)
 async def create_analytics_timeslot_from_each_spreadsheet(FileschedulerPlanned: UploadFile = File(...),schedulerPlaced: UploadFile = File(...)):
     """
-    Create a new analytics_timeslot from csv files in purpose of creating a compare_scheduler.
+    Create a new analytics_timeslot from csv files in purpose of creating a lesson.
     """
     try:
         # Read the file content
         contentSchedulerPlanned = await FileschedulerPlanned.read()
         contentSchedulerPlaced = await schedulerPlaced.read()
             
-        compare_schedulers_from_spreadsheets(contentSchedulerPlanned, contentSchedulerPlaced)
+        lessons_from_spreadsheets(contentSchedulerPlanned, contentSchedulerPlaced)
         
         return {"message": "Comparison completed successfully"}
         

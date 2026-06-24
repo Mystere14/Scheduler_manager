@@ -37,7 +37,7 @@ export const ValidationPage = ({ schedulerList, setSchedulerList }: ValidationPa
         try {
           
           await api.createAnalyticsTimeslotWithEachSpreadsheet(firstImport , secondImport);
-          let data=await api.getCompareScheduler();
+          let data=await api.getlesson();
           setComparisonResult(data);
           const uniqueCodes = [...new Set(data.map((r: any) => r.code_res_sae))];
           setComparisonResultUnique(uniqueCodes);
