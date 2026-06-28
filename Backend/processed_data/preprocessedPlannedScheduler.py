@@ -1,5 +1,6 @@
 import pandas as pd
 from io import BytesIO
+from Backend.routes.lesson import delete_true_lesson
 from processed_data.sessionName import session_name
 
 def preprocessSchedulerPlanned( plannedScheduler : bytes):
@@ -36,4 +37,6 @@ def preprocessSchedulerPlanned( plannedScheduler : bytes):
 
     df = df.drop(columns=["volume_hetu","line","format"])
 
+    delete_true_lesson()
+    
     return df.to_dict(orient="records")

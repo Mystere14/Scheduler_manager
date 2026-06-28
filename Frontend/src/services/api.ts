@@ -127,5 +127,15 @@ export default {
       method: 'GET',
     });
   },
+  getTrueLesson() {
+    return request('/lesson/getTrueLesson', {
+      method: 'GET',
+    });
+  },
+  getFalseLesson() {
+    return request('/lesson/getFalseLesson', {
+      method: 'GET',
+    });
+  },
 };
 

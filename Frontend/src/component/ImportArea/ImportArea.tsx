@@ -1,9 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import Papa from 'papaparse';
 import { DataTable } from '../DataTable/DataTable';
 import './ImportArea.css';
 import api from '../../services/api';
-
+import { ValidationContext } from '../../services/context';
 
 interface ImportAreaProps {
   title: string;
@@ -19,7 +19,8 @@ interface ImportedFile {
 
 export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, onDataCleared, isSchedulerPlanned }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [importedFile, setImportedFile] = useState<ImportedFile | null>(null);
+  const context = useContext(ValidationContext);
+  const importedFile = isSchedulerPlanned ? context.firstImport : context.secondImport;
   const [showModal, setShowModal] = useState(false);
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,10 +29,12 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
 
     try {
       const data = await api.createAnalyticsTimeslotByPreprocessedSchedulerPlanned(file);
-      console.log(`Data: ${data}`);
-      setImportedFile({ data: data.data, fileName: file.name });
+      if (isSchedulerPlanned) {
+        context.setFirstImport({ data: data.data, fileName: file.name });
+      } else {
+        context.setSecondImport({ data: data.data, fileName: file.name });
+      }
       onDataImported(data.data, file.name);
-      console.log(importedFile);
     } catch (error) {
       console.error('Erreur lors de l\'envoi du fichier vCalendar:', error);
       alert('Erreur lors de l\'envoi du fichier vCalendar');
@@ -52,7 +55,11 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
 
     try {
       const data = await api.createAnalyticsTimeslotFromVcalendar(file);
-      setImportedFile({ data: data.data, fileName: file.name });
+      if (isSchedulerPlanned) {
+        context.setFirstImport({ data: data.data, fileName: file.name });
+      } else {
+        context.setSecondImport({ data: data.data, fileName: file.name });
+      }
       onDataImported(data.data, file.name);
     } catch (error) {
       console.error('Erreur lors de l\'envoi du fichier vCalendar:', error);
@@ -62,7 +69,11 @@ export const ImportArea: React.FC<ImportAreaProps> = ({ title, onDataImported, o
 
   const handleResetFile = () => {
     onDataImported([], '');
-    setImportedFile(null);
+    if (isSchedulerPlanned) {
+      context.setFirstImport(null);
+    } else {
+      context.setSecondImport(null);
+    }
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }

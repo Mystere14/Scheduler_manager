@@ -8,10 +8,10 @@ from sqlmodel import Session, select
 from database import engine
 from models import analytics_timeslot, analytics_timeslotCreate, analytics_timeslotRead, analytics_timeslotUpdate
 from utils import save_to_db
-from processed_data.creatCSVFromData import extract_calendar_data, parse_calendar_file 
+from processed_data.creatCSVFromData import parse_calendar_file 
 from processed_data.compareCSVs import lesson_from_spreadsheets
 from processed_data.preprocessedPlannedScheduler import preprocessSchedulerPlanned
-
+from routes.lesson import delete_true_lesson
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ def create_analytics_timeslot():
     """
     Create a new analytics_timeslot.
     """
-    parsed_data = extract_calendar_data()
+    #parsed_data = extract_calendar_data()
     if parsed_data == -1:
         raise HTTPException(status_code=500, detail="Error fetching calendar data")
     
@@ -70,7 +70,7 @@ def create_analytics_timeslot():
     """
     Create a new analytics_timeslot.
     """
-    parsed_data = extract_calendar_data()
+    #parsed_data = extract_calendar_data()
     if parsed_data == -1:
         raise HTTPException(status_code=500, detail="Error fetching calendar data")
     
@@ -133,6 +133,8 @@ async def create_analytics_timeslot_by_preprocessed_scheduler_planned(file: Uplo
     """
     try:
         # Read the file content
+        delete_true_lesson()
+
         content = await file.read()
         
         preprocessed_data = preprocessSchedulerPlanned(content)
@@ -149,7 +151,6 @@ async def create_analytics_timeslot_by_preprocessed_scheduler_planned(file: Uplo
         with Session(engine) as session:
             try:
                 save_to_db(session, new_analytics_timeslot)
-                print(f"data: {new_analytics_timeslot_data}")
                 return new_analytics_timeslot_data
             except IntegrityError as exc:
                 session.rollback()
@@ -175,7 +176,7 @@ async def create_analytics_timeslot_from_each_spreadsheet(FileschedulerPlanned: 
         contentSchedulerPlaced = await schedulerPlaced.read()
             
         lesson_from_spreadsheets(contentSchedulerPlanned, contentSchedulerPlaced)
-        
+
         return {"message": "Comparison completed successfully"}
         
     except Exception as exc:

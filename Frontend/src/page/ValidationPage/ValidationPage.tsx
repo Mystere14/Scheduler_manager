@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext  } from 'react';
 import { ImportArea } from '../../component/ImportArea/ImportArea';
 import './ValidationPage.css';
 import api from '../../services/api';
 import { Discipline } from '../../component/Discipline/Discipline';
 import { SessionList } from '../../feature/SessionList/SessionList';
+import { ValidationContext, type Session } from '../../services/context';
 
 
 interface ValidationPage{
-  schedulerList: any[];
-  setSchedulerList: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 interface ImportedData {
@@ -16,46 +15,16 @@ interface ImportedData {
   fileName: string;
 }
 
-export const ValidationPage = ({ schedulerList, setSchedulerList }: ValidationPage) => {
-  const [firstImport, setFirstImport] = useState<ImportedData | null>(null);
-  const [secondImport, setSecondImport] = useState<ImportedData | null>(null);
-  const [comparisonResult, setComparisonResult] = useState<any>(null);
-  const [comparisonResultUnique, setComparisonResultUnique] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export const ValidationPage = ({}: ValidationPage) => {
+  const context = useContext(ValidationContext);  
 
   const handleFirstImport = (data: any[], fileName: string) => {
-    setFirstImport({ data, fileName });
+    context.setFirstImport({ data, fileName });
   };
 
   const handleSecondImport = (data: any[], fileName: string) => {
-    setSecondImport({ data, fileName });
+    context.setSecondImport({ data, fileName });
   };
-  useEffect(() => {
-    if (firstImport && secondImport) {
-      const fetchComparison = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-          
-          await api.createAnalyticsTimeslotWithEachSpreadsheet(firstImport , secondImport);
-          let data=await api.getCompareScheduler();
-          setComparisonResult(data);
-          const uniqueCodes = [...new Set(data.map((r: any) => r.code_res_sae))];
-          setComparisonResultUnique(uniqueCodes);
-          setSchedulerList(data);
-          
-          console.log(`Scheduler list:`, schedulerList);
-        } catch (err) {
-          setError(err instanceof Error ? err.message : 'Une erreur est survenue');
-          console.error('Erreur lors de la comparaison:', err);
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchComparison();
-    }
-  }, [firstImport, secondImport]);
 
   return (
     <div className="validation-page">
@@ -68,34 +37,34 @@ export const ValidationPage = ({ schedulerList, setSchedulerList }: ValidationPa
             <ImportArea
               title="Créneaux prévus (csv)"
               onDataImported={handleFirstImport}
-              onDataCleared={() => setFirstImport(null)}
+              onDataCleared={() => context.setFirstImport(null)}
               isSchedulerPlanned={true}
             />
             <ImportArea
               title="Créneaux placés (vcs)"
               onDataImported={handleSecondImport}
-              onDataCleared={() => setSecondImport(null)}
+              onDataCleared={() => context.setSecondImport(null)}
               isSchedulerPlanned={false}
             />
           </div>
-          {(firstImport && secondImport) && (
+          {(context.firstImport && context.secondImport) && (
             <div className="data-tables">
-              {loading && (
+              {context.loading && (
                 <div className="empty-state">
                   <div className="empty-state-icon">⏳</div>
                   <div className="empty-state-text">Chargement de la comparaison...</div>
                 </div>
               )}
-              {error && (
+              {context.error && (
                 <div className="empty-state" style={{ borderColor: '#fca5a5', background: '#fef2f2' }}>
                   <div className="empty-state-icon">❌</div>
-                  <div className="empty-state-text" style={{ color: '#dc2626' }}>Erreur: {error}</div>
+                  <div className="empty-state-text" style={{ color: '#dc2626' }}>Erreur: {context.error}</div>
                 </div>
               )}
-              {comparisonResult && !loading && !error && (
+              {context.comparisonResult && !context.loading && !context.error && (
                 <div>
-                  <h2>Contrôle semaine {firstImport.data[0].semaine.split('-')[1]} - semestre {firstImport.data[0].code_res_sae.split('-')[1]} </h2>
-                  <SessionList comparisonResultUnique={comparisonResultUnique} comparisonResult={comparisonResult} />
+                  <h2>Contrôle semaine {context.firstImport.data[0].semaine.split('-')[1]} - semestre {context.firstImport.data[0].code_res_sae.split('-')[1]} </h2>
+                  <SessionList />
                 </div>
               )}
             </div>
