@@ -26,6 +26,23 @@ def get_lesson():
         sessions = session.exec(select(lesson)).all()
         return sessions
 
+@router.get("/getTrueLesson", response_model=List[lessonRead])
+def get_true_lesson():
+    """
+    Get all true lessons.
+    """
+    with Session(engine) as session:
+        sessions = session.exec(select(lesson).where(lesson.is_lesson == True)).all()
+        return sessions
+
+@router.get("/getFalseLesson", response_model=List[lessonRead])
+def get_false_lesson():
+    """
+    Get all false lessons.
+    """
+    with Session(engine) as session:
+        sessions = session.exec(select(lesson).where(lesson.is_lesson == False)).all()
+        return sessions
 
 @router.post("/", response_model=lessonRead)
 def create_lesson(lesson_data: lessonCreate):
@@ -79,6 +96,18 @@ def delete_lesson():
     """
     with Session(engine) as session:
         session.exec(delete(lesson))
+        session.commit()
+        
+        return {"message": "All lesson entries deleted successfully"}
+
+
+@router.delete("/true_lesson")
+def delete_true_lesson():
+    """
+    Delete every true lesson.
+    """
+    with Session(engine) as session:
+        session.exec(delete(lesson).where(lesson.is_lesson == True))
         session.commit()
         
         return {"message": "All lesson entries deleted successfully"}

@@ -10,6 +10,8 @@ Backend/processed_data/__pycache__
 Backend/triggers/__pycache__/*
 Backend/triggers/__pycache__/*
 Backend/processed_data/__pycache__/*
+Backend/processed_data/__pycache__/compareCSVs.cpython-312.pyc
+Backend/processed_data/__pycache__/creatCSVFromData.cpython-312.pyc
 */__pycache__
 Backend/*.pyc
 Backend/build

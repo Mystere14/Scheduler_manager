@@ -9,26 +9,26 @@ import copy
 
 import pandas as pd
 
-from routes.lesson import create_lesson
+from routes.lesson import create_lesson, delete_lesson, get_false_lesson, get_lesson
 
 
 
 def lesson_from_spreadsheets(contentSchedulerPlanned: bytes, contentSchedulerPlaced: bytes):
     from models import lesson
-    from routes.lesson import create_lesson, delete_lesson
+    from routes.lesson import create_lesson, delete_true_lesson
     
+
     lessonsPlanned =preprocessed_data_to_csv(contentSchedulerPlanned, "scheduler_planned.csv")
-    lessonsPlaced =preprocessed_data_to_csv(contentSchedulerPlaced, "scheduler_placed.csv")
+    lessonsPlaced = get_false_lesson()
 
     # Add line here to register every lesson 
     lessonsPlanned=[list(s) for s in lessonsPlanned]
-    lessonsPlaced=[list(s) for s in lessonsPlaced]
 
-    lessonsPlaced=[[lesson[0],lesson[1],lesson[2],lesson[3],-lesson[4]] for lesson in lessonsPlaced]
+    lessonsPlaced=[[lesson.code_ens,lesson.type_ens.split("_")[0],lesson.semaine,lesson.code_res_sae,-lesson.heures,lesson.type_ens] for lesson in lessonsPlaced]
     
     differences = comparaison(lessonsPlanned,lessonsPlaced)
 
-    delete_lesson()
+    delete_true_lesson()
 
     # Single comparison: planned vs placed
     # Positive difference = unplaced (planned but not placed)
@@ -37,17 +37,26 @@ def lesson_from_spreadsheets(contentSchedulerPlanned: bytes, contentSchedulerPla
     lessonsNotPlaced= [lesson for lesson in differences if lesson[4] > 0]
 
     for lessons in lessonsPlaced + lessonsNotPlaced:
+        print(f"{lessons=}")
+
         is_valid=not (lessons in differences)
+
+        if(not is_valid):
+            differences.remove(lessons)
+
+        group = lessons[1] if len(lessons)==6 else lessons[-2]
+        
         new_lesson = lesson(
             code_ens=lessons[0],
-            type_ens=lessons[1],
+            type_ens=group,
             code_res_sae=lessons[3],
             semaine=lessons[2],
             heures=lessons[4],
-            is_valid=is_valid
+            is_valid=is_valid,
+            is_lesson=True
         )
         create_lesson(new_lesson)
-
+        
 
 def comparaison(lessonsA, lessonsB):
     """
@@ -62,23 +71,20 @@ def comparaison(lessonsA, lessonsB):
     # Track which B lessons have been matched
 
     for lessonA in lessonsAInstance:
-        for i, lessonB in enumerate(lessonsB):
+        for i, lessonB in enumerate(lessonsBInstance):
             if(lessonA[0]==lessonB[0] and lessonA[1]==lessonB[1] and lessonA[2]==lessonB[2] and lessonA[3]==lessonB[3]):
                 # Match found: subtract placed hours from planned hours
+                temp=lessonA[4]
                 lessonA[4] += lessonB[4]
-                break
-
-    for lessonB in lessonsBInstance:
-        for i, lessonA in enumerate(lessonsA):
-            if(lessonA[0]==lessonB[0] and lessonA[1]==lessonB[1] and lessonA[2]==lessonB[2] and lessonA[3]==lessonB[3]):
-
-                lessonB[4] += lessonA[4]
+                lessonB[4] += temp
+                lessonsBInstance = [lesson for lesson in lessonsBInstance if lesson[4] != 0.0]
+                lessonsAInstance = [lesson for lesson in lessonsAInstance if lesson[4] != 0.0]
                 break
 
     result= lessonsAInstance + lessonsBInstance
-    
+
     result = [lesson for lesson in result if lesson[4] != 0.0]
-    
+
     return result
 
 
@@ -105,7 +111,7 @@ def preprocessed_scheduler_planned(processed_data: pd.DataFrame):
     for _, row in processed_data.iterrows():
         type_ens = row['type_ens'].strip()
         if type_ens == 'C':
-            type_ens = 'AMPHI'
+            type_ens = 'COURS'
         lessonPlanned.append((row['code_ens'].strip(), type_ens.strip(), row['semaine'].strip(), row['code_res_sae'].strip(), float(row['volume'])))
     # (prof, type_ens, année-semaine, matière, heures) 
     return lessonPlanned

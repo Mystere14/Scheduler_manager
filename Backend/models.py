@@ -51,6 +51,7 @@ class lesson(SQLModel, table=True):
     type_ens: str
     heures: float
     is_valid: bool = Field(default=False)
+    is_lesson: bool = Field(default=True)
 
 class lessonRead(SQLModel):
     """
@@ -63,6 +64,7 @@ class lessonRead(SQLModel):
     type_ens: str
     heures: float
     is_valid: bool = Field(default=False)
+    is_lesson: bool = Field(default=True)
 
 class lessonCreate(SQLModel):
     """
@@ -75,6 +77,7 @@ class lessonCreate(SQLModel):
     type_ens: str
     heures: float
     is_valid: bool = Field(default=False)
+    is_lesson: bool = Field(default=True)
 
 class lessonUpdate(SQLModel):
     """
@@ -87,3 +90,4 @@ class lessonUpdate(SQLModel):
     type_ens: str
     heures: float
     is_valid: bool = Field(default=False)
+    is_lesson: bool = Field(default=True)
