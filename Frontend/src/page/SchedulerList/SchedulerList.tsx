@@ -33,7 +33,7 @@ export const SchedulerList = ({}: SchedulerList) => {
 
     return (
     <div className="SchedulerList">
-        
+        <h2>{filteredSchedulers[0].code_res_sae}</h2>
         {grouped.map((group: any) => (
         
         <div key={group.key}>
