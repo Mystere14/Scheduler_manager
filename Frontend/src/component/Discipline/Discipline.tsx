@@ -66,6 +66,18 @@ export const Discipline = ({ code_sae, sessionList }: Discipline) => {
                             >
                                 {session.is_valid ? '✓ Valide' : '✗ Non valide'}
                             </td>
+                            <td>
+                                {( session.is_valid === false && session.heures < 0) && (
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <line stroke="#faa615" x1="24" y1="24" x2="12" y2="3"></line>
+                                        <line stroke="#faa615" x1="1" y1="24" x2="12" y2="3"></line>
+                                        <line stroke="#faa615" x1="24" y1="23" x2="1" y2="23"></line>
+                                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                                        <line x1="12" y1="18" x2="12" y2="20"></line>
+                                    </svg>
+                                )  
+                                }  
+                            </td>
                         </tr>
                     ))}
                 </tbody>   
