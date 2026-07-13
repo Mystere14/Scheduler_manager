@@ -2,8 +2,8 @@ import React, { useContext, useRef, useState } from 'react';
 import Papa from 'papaparse';
 import { DataTable } from '../DataTable/DataTable';
 import './ImportArea.css';
-import api from '../../services/api';
-import { ValidationContext } from '../../services/context';
+import api from '../../service/Api';
+import { ValidationContext } from '../../service/Context';
 
 interface ImportAreaProps {
   title: string;

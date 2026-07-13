@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Discipline } from '../../component/Discipline/Discipline';
-import { ValidationContext } from '../../services/context';
+import { ValidationContext } from '../../service/Context';
 
 interface SessionList {
 }
@@ -11,7 +11,7 @@ export const SessionList = ({}: SessionList) => {
     return (
         <div className="comparison-results">
             {context.comparisonResultUnique.map((result: any) => (
-                    <Discipline key={result} code_sae={result} sessionList={context.comparisonResult.filter((r: any) => r.code_res_sae === result)} />
+                    <Discipline key={result} codeSae={result} sessionList={context.comparisonResult.filter((r: any) => r.codeResSae === result)} />
                 ))
             }
         </div>

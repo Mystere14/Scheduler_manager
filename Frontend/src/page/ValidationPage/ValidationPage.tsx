@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext  } from 'react';
 import { ImportArea } from '../../component/ImportArea/ImportArea';
 import './ValidationPage.css';
-import api from '../../services/api';
+import api from '../../service/Api';
 import { Discipline } from '../../component/Discipline/Discipline';
 import { SessionList } from '../../feature/SessionList/SessionList';
-import { ValidationContext, type Session } from '../../services/context';
+import { ValidationContext, type Session } from '../../service/Context';
 
 
 interface ValidationPage{
@@ -25,7 +25,7 @@ export const ValidationPage = ({}: ValidationPage) => {
   const handleSecondImport = (data: any[], fileName: string) => {
     context.setSecondImport({ data, fileName });
   };
-
+  {console.log('context.firstImport:',context.firstImport?.data[0]);}
   return (
     <div className="validation-page">
       <div className="validation-container">
@@ -47,6 +47,7 @@ export const ValidationPage = ({}: ValidationPage) => {
               isSchedulerPlanned={false}
             />
           </div>
+        
           {(context.firstImport && context.secondImport) && (
             <div className="data-tables">
               {context.loading && (
@@ -63,10 +64,12 @@ export const ValidationPage = ({}: ValidationPage) => {
               )}
               {context.comparisonResult && !context.loading && !context.error && (
                 <div>
-                  <h2>Contrôle semaine {context.firstImport.data[0].semaine.split('-')[1]} - semestre {context.firstImport.data[0].code_res_sae.split('-')[1]} </h2>
+                  <h2>Contrôle semaine {context.firstImport.data[0].week.split('-')[1]} - semestre {context.firstImport.data[0].codeResSae.split('-')[0]} </h2>
+                  
                   <SessionList />
                 </div>
-              )}
+              )
+              }
             </div>
           )}
         </main>

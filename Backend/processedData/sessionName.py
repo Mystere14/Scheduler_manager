@@ -1,4 +1,4 @@
-session_name = {
+sessionName = {
     "BIN-1-REM": "Accomp",
     "BIN-1-R110": "ANG1",
     "BIN-1-R103": "ARCHI1",

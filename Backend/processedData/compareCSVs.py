@@ -9,26 +9,26 @@ import copy
 
 import pandas as pd
 
-from routes.lesson import create_lesson, delete_lesson, get_false_lesson, get_lesson
+from routes.lesson import  getFalseLesson, getLesson
 
 
 
-def lesson_from_spreadsheets(contentSchedulerPlanned: bytes, contentSchedulerPlaced: bytes):
+def lessonFromSpreadsheets(contentSchedulerPlanned: bytes, contentSchedulerPlaced: bytes):
     from models import lesson
-    from routes.lesson import create_lesson, delete_true_lesson
+    from routes.lesson import createLesson, deleteTrueLesson
     
 
-    lessonsPlanned =preprocessed_data_to_csv(contentSchedulerPlanned, "scheduler_planned.csv")
-    lessonsPlaced = get_false_lesson()
+    lessonsPlanned =preprocessedDataToCsv(contentSchedulerPlanned, "schedulerPlanned.csv")
+    lessonsPlaced = getFalseLesson()
 
     # Add line here to register every lesson 
     lessonsPlanned=[list(s) for s in lessonsPlanned]
 
-    lessonsPlaced=[[lesson.code_ens,lesson.type_ens.split("_")[0],lesson.semaine,lesson.code_res_sae,-lesson.heures,lesson.type_ens] for lesson in lessonsPlaced]
+    lessonsPlaced=[[lesson.codeEns,lesson.typeEns.split("_")[0],lesson.week,lesson.codeResSae,-lesson.hour,lesson.typeEns] for lesson in lessonsPlaced]
     
     differences = comparaison(lessonsPlanned,lessonsPlaced)
 
-    delete_true_lesson()
+    deleteTrueLesson()
 
     # Single comparison: planned vs placed
     # Positive difference = unplaced (planned but not placed)
@@ -37,14 +37,11 @@ def lesson_from_spreadsheets(contentSchedulerPlanned: bytes, contentSchedulerPla
     lessonsNotPlaced= [lesson for lesson in differences if lesson[4] > 0]
 
     for lessons in lessonsPlaced + lessonsNotPlaced:
-        print(f"{lessons=}")
 
-        is_valid=not (lessons in differences)
+        isValid=not (lessons in differences)
 
-        if(not is_valid):
+        if(not isValid):
             differences.remove(lessons)
-
-        print(f"{len(lessons)=}")
 
         group = ""
 
@@ -53,16 +50,18 @@ def lesson_from_spreadsheets(contentSchedulerPlanned: bytes, contentSchedulerPla
         else:
             group= lessons[1]
         
-        new_lesson = lesson(
-            code_ens=lessons[0],
-            type_ens=group,
-            code_res_sae=lessons[3],
-            semaine=lessons[2],
-            heures=lessons[4],
-            is_valid=is_valid,
-            is_lesson=True
+        newLesson = lesson(
+            codeEns=lessons[0],
+            typeEns=group,
+            codeResSae=lessons[3],
+            week=lessons[2],
+            hour=lessons[4],
+            isValid=isValid,
+            isLesson=True
         )
-        create_lesson(new_lesson)
+        createLesson(newLesson)
+
+        print(newLesson)
         
 
 def comparaison(lessonsA, lessonsB):
@@ -95,52 +94,50 @@ def comparaison(lessonsA, lessonsB):
     return result
 
 
-def preprocessed_data_to_csv(content_file: bytes, file_name: str):
-    data = json.loads(content_file.decode('utf-8'))
+def preprocessedDataToCsv(contentFile: bytes, fileName: str):
+    data = json.loads(contentFile.decode('utf-8'))
 
-    processed_data = pd.DataFrame(data['data'])
+    processedData = pd.DataFrame(data['data'])
     
     everySession = pd.DataFrame()
 
-    if file_name == "scheduler_planned.csv":
-        everySession = preprocessed_scheduler_planned(processed_data)
+    if fileName == "schedulerPlanned.csv":
+        everySession = preprocessedSchedulerPlanned(processedData)
 
-    if file_name == "scheduler_placed.csv":
-        everySession = preprocessed_scheduler_placed(processed_data)
+    if fileName == "schedulerPlaced.csv":
+        everySession = preprocessedSchedulerPlaced(processedData)
 
     return everySession
 
 
-def preprocessed_scheduler_planned(processed_data: pd.DataFrame):
+def preprocessedSchedulerPlanned(processedData: pd.DataFrame):
 
     lessonPlanned = []
 
-    for _, row in processed_data.iterrows():
-        type_ens = row['type_ens'].strip()
-        if type_ens == 'C':
-            type_ens = 'COURS'
-        lessonPlanned.append((row['code_ens'].strip(), type_ens.strip(), row['semaine'].strip(), row['code_res_sae'].strip(), float(row['volume'])))
-    # (prof, type_ens, année-semaine, matière, heures) 
+    for _, row in processedData.iterrows():
+        typeEns = row['typeEns'].strip()
+        if typeEns == 'C':
+            typeEns = 'COURS'
+        lessonPlanned.append((row['codeEns'].strip(), typeEns.strip(), row['week'].strip(), row['codeResSae'].strip(), float(row['volume'])))
     return lessonPlanned
 
 
-def preprocessed_scheduler_placed(processed_data: pd.DataFrame):
+def preprocessedSchedulerPlaced(processedData: pd.DataFrame):
 
-    dateAndSubject = processed_data['matière'].map(lambda x: x.strip()).tolist()
+    dateAndSubject = processedData['matière'].map(lambda x: x.strip()).tolist()
     listSubject= [dateAndSubject[i].split(' ')[0] for i in range(len(dateAndSubject))]
     listDate= [dateAndSubject[i].split(' ')[1] for i in range(len(dateAndSubject))]
 
 
     lessonPlaced = []
-    for column in processed_data:
+    for column in processedData:
         if column == 'matière':
             continue
-        lesson = processed_data[processed_data[column] != ''].index.tolist()
-        hours = processed_data[processed_data[column] != ''][column].tolist() 
+        lesson = processedData[processedData[column] != ''].index.tolist()
+        hours = processedData[processedData[column] != ''][column].tolist() 
         for i in range(len(hours)):
             teacher = column.split(' - ')[0].strip()
-            type_ens = column.split(' - ')[1].strip()
-            lessonPlaced.append((teacher.strip(), type_ens.strip(), listDate[lesson[i]], listSubject[lesson[i]], float(hours[i])))
-            # (prof, type_ens, année-semaine, matière, heures) 
+            typeEns = column.split(' - ')[1].strip()
+            lessonPlaced.append((teacher.strip(), typeEns.strip(), listDate[lesson[i]], listSubject[lesson[i]], float(hours[i])))
     return lessonPlaced
 

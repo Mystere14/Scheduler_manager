@@ -7,32 +7,32 @@ from typing import Optional, Any, List
 import json
 
 from sqlmodel import Field, SQLModel
-from sqlalchemy import Column, JSON as JSON_Type
+from sqlalchemy import Column, JSON as jsonType
 
-class analytics_timeslot(SQLModel, table=True):
+class analyticsTimeslot(SQLModel, table=True):
     """
     Csv analytic file with parsed data
     """
-    __tablename__ = "analytics_timeslot"
-    __table_args__ = {"extend_existing": True}
+    __tablename__ = "analyticsTimeslot"
+    __tableArgs__ = {"extendExisting": True}
     id: Optional[int] = Field(default=None, primary_key=True)
-    data: List[dict] = Field(default=[], sa_column=Column(JSON_Type))
+    data: List[dict] = Field(default=[], sa_column=Column(jsonType))
 
-class analytics_timeslotRead(SQLModel):
+class analyticsTimeslotRead(SQLModel):
     """
     Csv analytic file
     """
     id: Optional[int] = None
     data: List[dict] = []
 
-class analytics_timeslotCreate(SQLModel):
+class analyticsTimeslotCreate(SQLModel):
     """
     Csv analytic file
     """
     id: Optional[int] = None
     data: List[dict] = []
 
-class analytics_timeslotUpdate(SQLModel):
+class analyticsTimeslotUpdate(SQLModel):
     """
     Csv analytic file
     """
@@ -43,51 +43,51 @@ class lesson(SQLModel, table=True):
     """
     The difference between the two csv files (créneau prévu and créneau placé)
     """
-    __table_args__ = {"extend_existing": True}
+    __tableArgs__ = {"extendExisting": True}
     id: Optional[int] = Field(default=None, primary_key=True)
-    code_ens: str
-    code_res_sae: str
-    semaine: str
-    type_ens: str
-    heures: float
-    is_valid: bool = Field(default=False)
-    is_lesson: bool = Field(default=True)
+    codeEns: str
+    codeResSae: str
+    week: str
+    typeEns: str
+    hour: float
+    isValid: bool = Field(default=False)
+    isLesson: bool = Field(default=True)
 
 class lessonRead(SQLModel):
     """
     Read schema for lesson 
     """
     id: Optional[int] = Field(default=None, primary_key=True)
-    code_ens: str
-    code_res_sae: str
-    semaine: str
-    type_ens: str
-    heures: float
-    is_valid: bool = Field(default=False)
-    is_lesson: bool = Field(default=True)
+    codeEns: str
+    codeResSae: str
+    week: str
+    typeEns: str
+    hour: float
+    isValid: bool = Field(default=False)
+    isLesson: bool = Field(default=True)
 
 class lessonCreate(SQLModel):
     """
     Create schema for lesson 
     """
     id: Optional[int] = Field(default=None, primary_key=True)
-    code_ens: str
-    code_res_sae: str
-    semaine: str
-    type_ens: str
-    heures: float
-    is_valid: bool = Field(default=False)
-    is_lesson: bool = Field(default=True)
+    codeEns: str
+    codeResSae: str
+    week: str
+    typeEns: str
+    hour: float
+    isValid: bool = Field(default=False)
+    isLesson: bool = Field(default=True)
 
 class lessonUpdate(SQLModel):
     """
     Update schema for lesson 
     """
     id: Optional[int] = Field(default=None, primary_key=True)
-    code_ens: str
-    code_res_sae: str
-    semaine: str
-    type_ens: str
-    heures: float
-    is_valid: bool = Field(default=False)
-    is_lesson: bool = Field(default=True)
+    codeEns: str
+    codeResSae: str
+    week: str
+    typeEns: str
+    hour: float
+    isValid: bool = Field(default=False)
+    isLesson: bool = Field(default=True)

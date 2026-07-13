@@ -1,25 +1,25 @@
 import React, { useMemo, useState } from 'react';
 import {useNavigate} from 'react-router-dom';
-import { ValidationContext } from '../../services/context';
+import { ValidationContext } from '../../service/Context';
 
 
 interface Discipline {
-    code_sae: string;
+    codeSae: string;
     sessionList: any[];
 }
 
 interface Session{
     id: number;
-    code_ens: string;
-    code_res_sae: string;
-    semaine: string;
-    heures: number;
-    is_valid: boolean;
-    type_ens: string;
+    codeEns: string;
+    codeResSae: string;
+    week: string;
+    hour: number;
+    isValid: boolean;
+    typeEns: string;
     isExtraSession?: boolean;
 }
 
-export const Discipline = ({ code_sae, sessionList }: Discipline) => {
+export const Discipline = ({ codeSae, sessionList }: Discipline) => {
     const navigate = useNavigate();
     const context = React.useContext(ValidationContext);
 
@@ -31,7 +31,7 @@ export const Discipline = ({ code_sae, sessionList }: Discipline) => {
             (item, index, self) =>
                 index === self.findIndex
                 (
-                    s => (s.type_ens.split('_')[0] === item.type_ens.split('_')[0] && Math.abs(s.heures) === Math.abs(item.heures))
+                    s => (s.typeEns.split('_')[0] === item.typeEns.split('_')[0] && Math.abs(s.hour) === Math.abs(item.hour))
                 )
         ).map(session => ({ ...session })); 
         
@@ -44,16 +44,16 @@ export const Discipline = ({ code_sae, sessionList }: Discipline) => {
         sessions.forEach(el => {
             uniqueSessions.forEach(el2 => {
 
-                if (el.type_ens.split("_")[0] === el2.type_ens.split("_")[0] &&
-                Math.abs(el.heures) === Math.abs(el2.heures)) 
+                if (el.typeEns.split("_")[0] === el2.typeEns.split("_")[0] &&
+                Math.abs(el.hour) === Math.abs(el2.hour)) 
                 {
-                    if(el.heures > 0 && !el.is_valid)
+                    if(el.hour > 0 && !el.isValid)
                     {
                         el2.isExtraSession=true;
                     }
                     else
                     {
-                        el2.is_valid = el2.is_valid && el.is_valid;
+                        el2.isValid = el2.isValid && el.isValid;
                     }
                 }
                 
@@ -70,18 +70,18 @@ export const Discipline = ({ code_sae, sessionList }: Discipline) => {
 );
     return (
         <div className="discipline">
-            <h3 className="discipline-title">{code_sae}</h3>
+            <h3 className="discipline-title">{codeSae}</h3>
             <table className="discipline-table">     
                 <tbody>
                     {eachSession.map((session: any) => (
                         <tr key={session.id}>
-                            <td>{session.type_ens.split('_')[0]} - {Math.abs(session.heures)}h</td>
+                            <td>{session.typeEns.split('_')[0]} - {Math.abs(session.hour)}h</td>
                             <td
                                 className={
-                                    (!session.is_valid && session.heures < 0) ? 'invalid' : 'valid'
+                                    (!session.isValid && session.hour < 0) ? 'invalid' : 'valid'
                                 }
                             >
-                                {(!session.is_valid && session.heures < 0) ? '✗ Non valide' : '✓ Valide'}
+                                {(!session.isValid && session.hour < 0) ? '✗ Non valide' : '✓ Valide'}
                             </td>
                             <td>
                                 {(session.isExtraSession) && (
@@ -99,7 +99,7 @@ export const Discipline = ({ code_sae, sessionList }: Discipline) => {
                     ))}
                 </tbody>   
             </table>
-            <button className="details-button" onClick={() => {navigate(`/session/${code_sae}`)}}>
+            <button className="details-button" onClick={() => {navigate(`/session/${codeSae}`)}}>
                 Voir les détails
             </button>
         </div>

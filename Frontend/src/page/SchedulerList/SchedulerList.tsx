@@ -2,7 +2,7 @@ import { SchedulerGroup } from '../../feature/SchedulerGroup/SchedulerGroup';
 import React, { useState, useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import './SchedulerList.css';
-import { ValidationContext } from '../../services/context';
+import { ValidationContext } from '../../service/Context';
 
 
 interface SchedulerList {
@@ -12,7 +12,7 @@ export const SchedulerList = ({ }: SchedulerList) => {
     const location = useLocation();
     const context = useContext(ValidationContext);
     const filteredSchedulers = context.schedulerList.filter((s: any) =>
-        s.code_res_sae === location.pathname.split('/')[2]
+        s.codeResSae === location.pathname.split('/')[2]
     );
 
     type Group = {
@@ -23,7 +23,7 @@ export const SchedulerList = ({ }: SchedulerList) => {
 
     const grouped: Group[] = Object.values(
         filteredSchedulers.reduce<Record<string, Group>>((acc, item) => {
-            const key = `${item.type_ens.split("_")[0]}-${Math.abs(item.heures)}h`;
+            const key = `${item.typeEns.split("_")[0]}-${Math.abs(item.hour)}h`;
 
             if (!acc[key]) {
                 acc[key] = {
@@ -33,7 +33,7 @@ export const SchedulerList = ({ }: SchedulerList) => {
                 };
             }
 
-            if (!item.is_valid && item.heures > 0) {
+            if (!item.isValid && item.hour > 0) {
                 acc[key].extraSessions.push(item);
             } else {
                 acc[key].sessions.push(item);
@@ -45,7 +45,7 @@ export const SchedulerList = ({ }: SchedulerList) => {
 
     return (
     <div className="SchedulerList">
-        <h2>{filteredSchedulers[0]?.code_res_sae}</h2>
+        <h2>{filteredSchedulers[0]?.codeResSae}</h2>
 
         {grouped.map((group: any) => (
             <div key={group.key}>

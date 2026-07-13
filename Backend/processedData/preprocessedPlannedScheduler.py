@@ -1,7 +1,7 @@
 import pandas as pd
 from io import BytesIO
-from Backend.routes.lesson import delete_true_lesson
-from processed_data.sessionName import session_name
+from routes.lesson import deleteTrueLesson
+from processedData.sessionName import sessionName
 
 def preprocessSchedulerPlanned( plannedScheduler : bytes):
 
@@ -31,12 +31,16 @@ def preprocessSchedulerPlanned( plannedScheduler : bytes):
 
     df["code_res_sae"] = df["code_res_sae"].str.strip()
     df["code_res_sae"] = df["code_res_sae"].str.slice(0, 3) + "-" +df["code_res_sae"].str.slice(5, 6) + "-" +df["code_res_sae"].str.slice(4, 8)
-    df["code_res_sae"] = df["code_res_sae"].map(session_name)
+    df["code_res_sae"] = df["code_res_sae"].map(sessionName)
 
     df = df.loc[df.index.repeat(df["line"])]
 
     df = df.drop(columns=["volume_hetu","line","format"])
 
-    delete_true_lesson()
+    deleteTrueLesson()
     
+    print("here",df.to_dict(orient="records"))
+
+    df.rename(columns={"code_ens": "codeEns", "code_res_sae": "codeResSae", "semaine": "week", "type_ens": "typeEns"}, inplace=True)
+
     return df.to_dict(orient="records")
