@@ -44,7 +44,14 @@ def lesson_from_spreadsheets(contentSchedulerPlanned: bytes, contentSchedulerPla
         if(not is_valid):
             differences.remove(lessons)
 
-        group = lessons[1] if len(lessons)==6 else lessons[-2]
+        print(f"{len(lessons)=}")
+
+        group = ""
+
+        if(len(lessons)==6):
+            group = lessons[-1]
+        else:
+            group= lessons[1]
         
         new_lesson = lesson(
             code_ens=lessons[0],
