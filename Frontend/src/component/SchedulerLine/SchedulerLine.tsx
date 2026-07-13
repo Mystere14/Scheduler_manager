@@ -8,11 +8,11 @@ export const SchedulerLine = ({ scheduler, isExtraScheduler }: SchedulerLine) =>
     
     return (
         <div className="scheduler-line">
-            <p>{scheduler.type_ens}</p>
-            <p>{scheduler.code_ens}</p>
+            <p>{scheduler.typeEns}</p>
+            <p>{scheduler.codeEns}</p>
             {!isExtraScheduler && (
-                <p className={scheduler.is_valid ? "status-valid" : "status-invalid"}>
-                    {scheduler.is_valid ? "✓ Valide" : "✗ Non valide"}
+                <p className={scheduler.isValid ? "status-valid" : "status-invalid"}>
+                    {scheduler.isValid ? "✓ Valide" : "✗ Non valide"}
                 </p>
             )}
         </div>

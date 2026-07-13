@@ -1,8 +1,8 @@
 // This file contains functions to interact with the backend API for the Scheduler Manager.
-// It handles API calls for managing Code_ens (teachers), Cours (sessions), and Absences.
+// It handles API calls for managing CodeEns (teachers), Cours (sessions), and Absences.
 
 // Use dynamic API URL for desktop app compatibility
-const BASE_URL = (window as any).__API_URL__ || 'http://localhost:8000';
+const BASEURL = (window as any).__APIURL__ || 'http://localhost:8000';
 
 async function request(path: string, options: RequestInit = {}) {
   const headers: Record<string, any> = {
@@ -10,7 +10,7 @@ async function request(path: string, options: RequestInit = {}) {
     ...(options.headers || {})
   };
 
-  const url = `${BASE_URL}${path}`;
+  const url = `${BASEURL}${path}`;
   const res = await fetch(url, {
     ...options,
     headers,
@@ -31,14 +31,14 @@ async function request(path: string, options: RequestInit = {}) {
 export { request };
 
 export default {
-// ===== Analytics_timeslot (Analytics) =====
+// ===== AnalyticsTimeslot (Analytics) =====
   getAnalyticsTimeslot() { 
-    return request('/analytics_timeslot/', {
+    return request('/analyticsTimeslot/', {
       method: 'GET',
     });
   },
   createAnalyticsTimeslot(analyticsTimeslotData: any) {
-    return request('/analytics_timeslot/', {
+    return request('/analyticsTimeslot/', {
       method: 'POST',
       body: JSON.stringify(analyticsTimeslotData),
     });
@@ -49,7 +49,7 @@ export default {
     
     const headers: Record<string, any> = {};
     
-    const url = `${(window as any).__API_URL__}/analytics_timeslot/preprocessedSchedulerPlanned`;
+    const url = `${(window as any).__APIURL__}/analyticsTimeslot/preprocessedSchedulerPlanned`;
     const res = await fetch(url, {
       method: 'POST',
       headers,
@@ -72,7 +72,7 @@ export default {
     const headers: Record<string, any> = {};
     // Don't set Content-Type, let the browser set it with boundary
     
-    const url = `${(window as any).__API_URL__ || 'http://localhost:8000'}/analytics_timeslot/vcalendar`;
+    const url = `${(window as any).__APIURL__ || 'http://localhost:8000'}/analyticsTimeslot/vcalendar`;
     const res = await fetch(url, {
       method: 'POST',
       headers,
@@ -97,7 +97,7 @@ export default {
     formData.append('FileschedulerPlanned', plannedBlob, 'scheduled_planned.json');
     formData.append('schedulerPlaced', placedBlob, 'scheduled_placed.json');
 
-    const url = `${(window as any).__API_URL__ || 'http://localhost:8000'}/analytics_timeslot/withEachSpreadsheet`;
+    const url = `${(window as any).__APIURL__ || 'http://localhost:8000'}/analyticsTimeslot/withEachSpreadsheet`;
     const res = await fetch(url, {
       method: 'POST',
       body: formData,
@@ -111,13 +111,13 @@ export default {
 
   },
   updateAnalyticsTimeslot(analyticsTimeslotData: any) {
-    return request('/analytics_timeslot/', {
+    return request('/analyticsTimeslot/', {
       method: 'PUT',
       body: JSON.stringify(analyticsTimeslotData),
     });
   },
   deleteAnalyticsTimeslot() {
-    return request('/analytics_timeslot/', {
+    return request('/analyticsTimeslot/', {
       method: 'DELETE',
     });
   },

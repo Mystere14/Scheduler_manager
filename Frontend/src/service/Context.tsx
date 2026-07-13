@@ -2,12 +2,12 @@ import React from 'react';
 
 export interface Session{
     id: number;
-    code_ens: string;
-    code_res_sae: string;
-    semaine: string;
-    heures: number;
-    is_valid: boolean;
-    type_ens: string;
+    codeEns: string;
+    codeResSae: string;
+    week: string;
+    hour: number;
+    isValid: boolean;
+    typeEns: string;
 }
 
 export interface ImportedData {

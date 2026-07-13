@@ -7,7 +7,7 @@ from sqlmodel import Session, select
 
 from database import engine
 from models import lesson, lessonRead, lessonCreate, lessonUpdate
-from utils import save_to_db
+from utils import saveToDb
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[lessonRead])
-def get_lesson():
+def getLesson():
     """
     Get all lessons.
     """
@@ -27,60 +27,60 @@ def get_lesson():
         return sessions
 
 @router.get("/getTrueLesson", response_model=List[lessonRead])
-def get_true_lesson():
+def getTrueLesson():
     """
     Get all true lessons.
     """
     with Session(engine) as session:
-        sessions = session.exec(select(lesson).where(lesson.is_lesson == True)).all()
+        sessions = session.exec(select(lesson).where(lesson.isLesson == True)).all()
         return sessions
 
 @router.get("/getFalseLesson", response_model=List[lessonRead])
-def get_false_lesson():
+def getFalseLesson():
     """
     Get all false lessons.
     """
     with Session(engine) as session:
-        sessions = session.exec(select(lesson).where(lesson.is_lesson == False)).all()
+        sessions = session.exec(select(lesson).where(lesson.isLesson == False)).all()
         return sessions
 
 @router.post("/", response_model=lessonRead)
-def create_lesson(lesson_data: lessonCreate):
+def createLesson(lessonData: lessonCreate):
     """
     Create a new lesson.
     """
-    new_lesson = lesson.model_validate(lesson_data)
+    newLesson = lesson.model_validate(lessonData)
 
     with Session(engine) as session:
         try:
-            save_to_db(session, new_lesson)
-            return new_lesson
+            saveToDb(session, newLesson)
+            return newLesson
         except IntegrityError as exc:
             session.rollback()
-            logger.exception("Integrity error creating lesson %s", lesson_data.code)
+            logger.exception("Integrity error creating lesson %s", lessonData.code)
             raise HTTPException(
-                status_code=409, detail=f"Lesson with code '{lesson_data.code}' already exists"
+                status_code=409, detail=f"Lesson with code '{lessonData.code}' already exists"
             ) from exc
 
 
 @router.put("/{code}", response_model=lessonRead)
-def update_lesson(code: str, lesson_data: lessonUpdate):
+def updateLesson(code: str, lessonData: lessonUpdate):
     """
-    Update a teacher code by code.
+    Update a lesson by code.
     """
     with Session(engine) as session:
-        lesson_record = session.get(lesson, code)
-        if not lesson_record:
+        lessonRecord = session.get(lesson, code)
+        if not lessonRecord:
             raise HTTPException(status_code=404, detail="Lesson not found")
         
         # Update only provided fields
-        update_data = lesson_data.model_dump(exclude_unset=True)
-        for key, value in update_data.items():
-            setattr(lesson_record, key, value)
+        updateData = lessonData.model_dump(exclude_unset=True)
+        for key, value in updateData.items():
+            setattr(lessonRecord, key, value)
         
         try:
-            save_to_db(session, lesson_record)
-            return update_data
+            saveToDb(session, lessonRecord)
+            return updateData
         except IntegrityError as exc:
             session.rollback()
             logger.exception("Integrity error updating lesson %s", code)
@@ -90,7 +90,7 @@ def update_lesson(code: str, lesson_data: lessonUpdate):
 
 
 @router.delete("/")
-def delete_lesson():
+def deleteLesson():
     """
     Delete every lesson.
     """
@@ -101,13 +101,13 @@ def delete_lesson():
         return {"message": "All lesson entries deleted successfully"}
 
 
-@router.delete("/true_lesson")
-def delete_true_lesson():
+@router.delete("/trueLesson")
+def deleteTrueLesson():
     """
     Delete every true lesson.
     """
     with Session(engine) as session:
-        session.exec(delete(lesson).where(lesson.is_lesson == True))
+        session.exec(delete(lesson).where(lesson.isLesson == True))
         session.commit()
         
         return {"message": "All lesson entries deleted successfully"}

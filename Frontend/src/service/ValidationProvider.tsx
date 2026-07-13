@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { ValidationContext, type ImportedData, type Session } from "./context";
-import api from "./api";
+import { ValidationContext, type ImportedData, type Session } from "./Context";
+import api from "./Api";
 import { data } from "react-router-dom";
 
 interface Props {
@@ -30,7 +30,7 @@ export function ValidationProvider({ children }: Props) {
 
         setComparisonResult(data);
         setComparisonResultUnique(
-          [...new Set(data.map(r => r.code_res_sae))]
+          [...new Set(data.map(r => r.codeResSae))]
         );
         setSchedulerList(data);
 

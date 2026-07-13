@@ -6,28 +6,23 @@ from io import StringIO
 import json
 import os
 
-from Backend.routes.lesson import delete_true_lesson
-#from models import lesson
-
-#from Backend.routes import lesson
-#from Backend.routes.lesson import create_lesson, delete_lesson
-
+from routes.lesson import deleteTrueLesson
     
 URL="http://localhost:8080/api/v2/get/232817/"
 
 
 from icalendar import Calendar
 
-def parse_calendar_file(file_content: bytes):
+def parseCalendarFile(fileContent: bytes):
     """
     Parse vCalendar file content and return parsed data.
     """
     
     from models import lesson
-    from routes.lesson import create_lesson, delete_lesson
+    from routes.lesson import createLesson, deleteLesson
 
     try:
-        response = Calendar.from_ical(file_content)
+        response = Calendar.from_ical(fileContent)
 
         #Variable for backend comparaison 
         realLessons = list()
@@ -51,7 +46,7 @@ def parse_calendar_file(file_content: bytes):
             
             text = str(summary)
             desc = event.get('DESCRIPTION')
-            prof = from_text_to_dict(desc.split(' '))
+            prof = fromTextToDict(desc.split(' '))
             parts = text.split(' / ') #(DESCRIPTION.profs, SUMMARY[0], SUMMARY[1], last)
             
             week = startDate.isocalendar().week
@@ -95,45 +90,45 @@ def parse_calendar_file(file_content: bytes):
         teams = teamsDisplay[0:5]
         teams.insert(teams.index('AMPHI'), 'COURS')
         teams.remove('AMPHI')
-        csv_content = str()
+        csvContent = str()
 
-        csv_content += ','.join([''] + profDup) + '\n'
-        csv_content += ','.join([''] + teamsDisplay) + '\n'
+        csvContent += ','.join([''] + profDup) + '\n'
+        csvContent += ','.join([''] + teamsDisplay) + '\n'
         for row in matieres:
-            cur_matiere = row
+            curMatiere = row
             line = []
             for week in weeks:
                 for professeur in professeurs:
                     for team in teams:
                         last= 0
-                        is_inserted = False 
+                        isInserted = False 
                         for cour in cours: 
-                            if cour[0] == cur_matiere and cour[1] == team and cour[2] == week and cour[3] == professeur:
-                                is_inserted = True
+                            if cour[0] == curMatiere and cour[1] == team and cour[2] == week and cour[3] == professeur:
+                                isInserted = True
                                 last += cour[4]
-                        if is_inserted:
+                        if isInserted:
                             line.append(str(last))
                         else:
                             line.append('')
-                csv_content += ','.join([row + ' ' + week] + line) + '\n'
+                csvContent += ','.join([row + ' ' + week] + line) + '\n'
         
         # Parse CSV string into list of dictionaries
-        parsed_data = parse_csv_string(csv_content)
+        parsedData = parseCsvString(csvContent)
 
-        delete_lesson()
+        deleteTrueLesson()
         for lessons in realLessons:
-            new_lesson = lesson(
-                code_ens=lessons[0],
-                semaine=lessons[1],
-                type_ens=lessons[2],
-                code_res_sae=lessons[3],
-                heures=lessons[4],
-                is_valid=False,
-                is_lesson=False
+            newLesson = lesson(
+                codeEns=lessons[0],
+                week=lessons[1],
+                typeEns=lessons[2],
+                codeResSae=lessons[3],
+                hour=lessons[4],
+                isValid=False,
+                isLesson=False
             )
-            create_lesson(new_lesson)
+            createLesson(newLesson)
 
-        return parsed_data
+        return parsedData
     except Exception as e:
         print(f"Error parsing calendar file: {e}")
         import traceback
@@ -141,34 +136,34 @@ def parse_calendar_file(file_content: bytes):
         return -1
 
 
-def from_text_to_dict(desc: list):
+def fromTextToDict(desc: list):
     """
     Extract professor names from event description.
     """
-    Interest_data=desc[1:3]
-    for i in range(len(Interest_data)):
-        if 'Prof' in Interest_data[i]:
-            return Interest_data[i][5:]
+    InterestData=desc[1:3]
+    for i in range(len(InterestData)):
+        if 'Prof' in InterestData[i]:
+            return InterestData[i][5:]
 
 
-def parse_csv_string(csv_string: str):
+def parseCsvString(csvString: str):
     """
     Parse CSV string and return list of dictionaries.
     """
-    lines = csv_string.strip().split('\n')
+    lines = csvString.strip().split('\n')
     if len(lines) < 3:
         return []
     
     # First row: professor names
     professors = lines[0].split(',')[1:]  # Skip empty first column
     # Second row: course types (AMPHI, TD, TP, COURS)
-    course_types = lines[1].split(',')[1:]  # Skip empty first column
+    courseTypes = lines[1].split(',')[1:]  # Skip empty first column
     
     # Create column headers by combining professor and course type
     headers = []
     for i, prof in enumerate(professors):
-        if i < len(course_types):
-            headers.append(f"{prof} - {course_types[i]}")
+        if i < len(courseTypes):
+            headers.append(f"{prof} - {courseTypes[i]}")
     
     # Parse data rows
     data = []
@@ -180,12 +175,12 @@ def parse_csv_string(csv_string: str):
         matiere = parts[0]
         values = parts[1:]
         
-        row_dict = {"matière": matiere}
+        rowDict = {"matière": matiere}
         for i, header in enumerate(headers):
             if i < len(values):
-                row_dict[header] = values[i] if values[i].strip() else ""
+                rowDict[header] = values[i] if values[i].strip() else ""
         
-        data.append(row_dict)
+        data.append(rowDict)
     
     return data
 
