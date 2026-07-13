@@ -15,9 +15,15 @@ export const SchedulerList = ({ }: SchedulerList) => {
         s.code_res_sae === location.pathname.split('/')[2]
     );
 
-    const grouped = Object.values(
-        filteredSchedulers.reduce((acc: any, item: any) => {
-            const key = `${item.type_ens.split('_')[0]}-${Math.abs(item.heures)}h`;
+    type Group = {
+        key: string;
+        sessions: typeof filteredSchedulers;
+        extraSessions: typeof filteredSchedulers;
+    };
+
+    const grouped: Group[] = Object.values(
+        filteredSchedulers.reduce<Record<string, Group>>((acc, item) => {
+            const key = `${item.type_ens.split("_")[0]}-${Math.abs(item.heures)}h`;
 
             if (!acc[key]) {
                 acc[key] = {
@@ -27,7 +33,7 @@ export const SchedulerList = ({ }: SchedulerList) => {
                 };
             }
 
-            if (!item.is_valid && item.heures < 0) {
+            if (!item.is_valid && item.heures > 0) {
                 acc[key].extraSessions.push(item);
             } else {
                 acc[key].sessions.push(item);

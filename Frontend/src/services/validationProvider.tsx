@@ -33,9 +33,7 @@ export function ValidationProvider({ children }: Props) {
           [...new Set(data.map(r => r.code_res_sae))]
         );
         setSchedulerList(data);
-        
-        console.log(comparisonResult);
-        console.log(comparisonResultUnique);
+
       } catch (err) {
         setError(err instanceof Error ? err.message : "Erreur");
       } finally {

@@ -16,6 +16,7 @@ interface Session{
     heures: number;
     is_valid: boolean;
     type_ens: string;
+    isExtraSession?: boolean;
 }
 
 export const Discipline = ({ code_sae, sessionList }: Discipline) => {
@@ -34,16 +35,32 @@ export const Discipline = ({ code_sae, sessionList }: Discipline) => {
                 )
         ).map(session => ({ ...session })); 
         
+        uniqueSessions.forEach(el => 
+            {
+                el.isExtraSession = false;
+            }
+        )
+
         sessions.forEach(el => {
             uniqueSessions.forEach(el2 => {
-                if (
-                    el.type_ens.split("_")[0] === el2.type_ens.split("_")[0] &&
-                    Math.abs(el.heures) === Math.abs(el2.heures)
-                ) {
-                    el2.is_valid = el2.is_valid && el.is_valid;
+
+                if (el.type_ens.split("_")[0] === el2.type_ens.split("_")[0] &&
+                Math.abs(el.heures) === Math.abs(el2.heures)) 
+                {
+                    if(el.heures > 0 && !el.is_valid)
+                    {
+                        el2.isExtraSession=true;
+                    }
+                    else
+                    {
+                        el2.is_valid = el2.is_valid && el.is_valid;
+                    }
                 }
+                
+
             });
         })
+
         return uniqueSessions;
     }
 
@@ -61,13 +78,13 @@ export const Discipline = ({ code_sae, sessionList }: Discipline) => {
                             <td>{session.type_ens.split('_')[0]} - {Math.abs(session.heures)}h</td>
                             <td
                                 className={
-                                    session.is_valid ? 'valid' : 'invalid'
+                                    (!session.is_valid && session.heures < 0) ? 'invalid' : 'valid'
                                 }
                             >
-                                {session.is_valid ? '✓ Valide' : '✗ Non valide'}
+                                {(!session.is_valid && session.heures < 0) ? '✗ Non valide' : '✓ Valide'}
                             </td>
                             <td>
-                                {( session.is_valid === false && session.heures < 0) && (
+                                {(session.isExtraSession) && (
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                         <line stroke="#faa615" x1="24" y1="24" x2="12" y2="3"></line>
                                         <line stroke="#faa615" x1="1" y1="24" x2="12" y2="3"></line>
