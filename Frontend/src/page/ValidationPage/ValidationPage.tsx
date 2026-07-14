@@ -25,7 +25,6 @@ export const ValidationPage = ({}: ValidationPage) => {
   const handleSecondImport = (data: any[], fileName: string) => {
     context.setSecondImport({ data, fileName });
   };
-  {console.log('context.firstImport:',context.firstImport?.data[0]);}
   return (
     <div className="validation-page">
       <div className="validation-container">
