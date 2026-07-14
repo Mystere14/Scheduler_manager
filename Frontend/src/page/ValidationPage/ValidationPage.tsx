@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useContext  } from 'react';
 import { ImportArea } from '../../component/ImportArea/ImportArea';
 import './ValidationPage.css';
-import api from '../../service/Api';
-import { Discipline } from '../../component/Discipline/Discipline';
 import { SessionList } from '../../feature/SessionList/SessionList';
 import { ValidationContext, type Session } from '../../service/Context';
 
