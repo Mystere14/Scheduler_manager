@@ -61,9 +61,6 @@ def lessonFromSpreadsheets(contentSchedulerPlanned: bytes, contentSchedulerPlace
         )
         createLesson(newLesson)
 
-        print(newLesson)
-        
-
 def comparaison(lessonsA, lessonsB):
     """
     Compare two lists of lessons.

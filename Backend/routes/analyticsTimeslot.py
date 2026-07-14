@@ -47,6 +47,7 @@ def createAnalyticsTimeslot():
     """
     Create a new analyticsTimeslot.
     """
+    parsedData = extractCalendarData()
     if parsedData == -1:
         raise HTTPException(status_code=500, detail="Error fetching calendar data")
     
@@ -69,6 +70,7 @@ def createAnalyticsTimeslot():
     """
     Create a new analyticsTimeslot.
     """
+    parsedData = extractCalendarData()
     if parsedData == -1:
         raise HTTPException(status_code=500, detail="Error fetching calendar data")
     

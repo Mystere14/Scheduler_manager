@@ -22,6 +22,8 @@ def parseCalendarFile(fileContent: bytes):
     from routes.lesson import createLesson, deleteLesson
 
     try:
+        deleteLesson()
+
         response = Calendar.from_ical(fileContent)
 
         #Variable for backend comparaison 

@@ -38,8 +38,6 @@ def preprocessSchedulerPlanned( plannedScheduler : bytes):
     df = df.drop(columns=["volume_hetu","line","format"])
 
     deleteTrueLesson()
-    
-    print("here",df.to_dict(orient="records"))
 
     df.rename(columns={"code_ens": "codeEns", "code_res_sae": "codeResSae", "semaine": "week", "type_ens": "typeEns"}, inplace=True)
 
