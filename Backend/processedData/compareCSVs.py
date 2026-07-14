@@ -61,7 +61,7 @@ def lessonFromSpreadsheets(contentSchedulerPlanned: bytes, contentSchedulerPlace
         )
         createLesson(newLesson)
 
-        print(newLesson)
+        print(f"{newLesson=}")
         
 
 def comparaison(lessonsA, lessonsB):
