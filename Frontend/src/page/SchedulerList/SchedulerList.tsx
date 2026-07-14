@@ -1,5 +1,5 @@
 import { SchedulerGroup } from '../../feature/SchedulerGroup/SchedulerGroup';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import './SchedulerList.css';
 import { ValidationContext } from '../../service/Context';

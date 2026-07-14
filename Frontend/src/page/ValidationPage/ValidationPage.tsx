@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useContext  } from 'react';
 import { ImportArea } from '../../component/ImportArea/ImportArea';
 import './ValidationPage.css';
-import api from '../../service/Api';
-import { Discipline } from '../../component/Discipline/Discipline';
 import { SessionList } from '../../feature/SessionList/SessionList';
 import { ValidationContext, type Session } from '../../service/Context';
 
@@ -25,7 +23,6 @@ export const ValidationPage = ({}: ValidationPage) => {
   const handleSecondImport = (data: any[], fileName: string) => {
     context.setSecondImport({ data, fileName });
   };
-  {console.log('context.firstImport:',context.firstImport?.data[0]);}
   return (
     <div className="validation-page">
       <div className="validation-container">

@@ -1,7 +1,6 @@
 from datetime import date
 
 from icalendar import Calendar
-import csv
 from io import StringIO
 import json
 import os

@@ -1,5 +1,4 @@
 import React, { useContext, useRef, useState } from 'react';
-import Papa from 'papaparse';
 import { DataTable } from '../DataTable/DataTable';
 import './ImportArea.css';
 import api from '../../service/Api';

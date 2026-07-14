@@ -23,7 +23,13 @@ def preprocessSchedulerPlanned( plannedScheduler : bytes):
     df.loc[df["volume_hetu"] % 1.5 == 0, "format"] = 1.5
     df.loc[df["volume_hetu"] % 2 == 0, "format"] = 2
 
-    df = df[df["code_ens"] != "HETU"]
+    df.loc[(df["code_ens"]=="HETU") & (df["type_ens"]=="Aut"), "format"]=2
+
+    df = df[(df["code_ens"] != "HETU") | (df["type_ens"] == "Aut.")]
+
+    df.loc[df["type_ens"]=="Aut.", "code_ens"]=""
+    df.loc[df["type_ens"]=="Aut.", "type_ens"]="Autonomie"
+    
 
     df["line"] = (df["volume"] / df["format"]).astype(int)
 
@@ -38,8 +44,6 @@ def preprocessSchedulerPlanned( plannedScheduler : bytes):
     df = df.drop(columns=["volume_hetu","line","format"])
 
     deleteTrueLesson()
-    
-    print("here",df.to_dict(orient="records"))
 
     df.rename(columns={"code_ens": "codeEns", "code_res_sae": "codeResSae", "semaine": "week", "type_ens": "typeEns"}, inplace=True)
 
