@@ -1,0 +1,7 @@
+.details-button {
+  background-color: #3b82f6;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}

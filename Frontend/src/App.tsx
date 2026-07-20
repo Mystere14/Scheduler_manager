@@ -1,29 +1,22 @@
 import './App.css'
-import { useState } from 'react'
-import { WelcomePage } from './page/WelcomePage/WelcomePage'
-import { SchedulerPage } from './page/SchedulerPage/SchedulerPage'
-import { ValidatyPage } from './page/ValidatyPage/ValidationPage'
+import { useContext, useEffect, useState } from 'react'
+import { SchedulerList } from './page/SchedulerList/SchedulerList'
+import { ValidationPage } from './page/ValidationPage/ValidationPage'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import api from './service/Api'
+import { ValidationContext, type Session } from './service/Context'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<'welcome' | 'scheduler' | 'validaty'>('welcome')
+  const context = useContext(ValidationContext);
 
-  const handleNavigateToScheduler = () => {
-    setCurrentPage('scheduler')
-  }
-
-  const handleNavigateToValidaty = () => {
-    setCurrentPage('validaty')
-  }
 
   return (    
-  <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<WelcomePage />} />
-        <Route path="/scheduler" element={<SchedulerPage />} />
-        <Route path="/validate" element={<ValidatyPage />} />
-      </Routes>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+            <Route path="/validation" element={<ValidationPage/>} />
+            <Route path="/session/:codeSae" element={<SchedulerList/>} />
+        </Routes>
+      </BrowserRouter>
   )
 }
 

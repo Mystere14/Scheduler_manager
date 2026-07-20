@@ -6,6 +6,13 @@ Backend/.venv/*
 Backend/__pycache__
 Backend/routes/__pycache__
 Backend/triggers/__pycache__
+Backend/processedData/__pycache__
+Backend/triggers/__pycache__/*
+Backend/triggers/__pycache__/*
+Backend/processedData/__pycache__/*
+Backend/processedData/__pycache__/compareCSVs.cpython-312.pyc
+Backend/processedData/__pycache__/creatCSVFromData.cpython-312.pyc
+*/__pycache__
 Backend/*.pyc
 Backend/build
 Backend/dist

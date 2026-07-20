@@ -5,16 +5,16 @@ import logging
 
 
 from sqlalchemy import create_engine
-from sqlmodel import Session, SQLModel
+from sqlmodel import SQLModel
 from config import settings
 
 import models 
 
 logger = logging.getLogger(__name__)
 
-engine = create_engine(settings.DATABASE_URL, echo=True)
+engine = create_engine(settings.DATABASEURL, echo=True)
 
-def init_db():
+def initDb():
     """
     Initialize the database by creating all tables.
     """
@@ -25,7 +25,7 @@ def init_db():
     logger.info("✅ Database tables created successfully")
 
 
-def get_session():
+def getSession():
     """
     Provide a transactional scope around a series of operations.
     """

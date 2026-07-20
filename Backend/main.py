@@ -1,18 +1,16 @@
 import os
 import sys
 
+from routes import analyticsTimeslot, lesson
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from sqlmodel import create_engine
 
 from config import settings
-from database import init_db
+from database import initDb
 from starlette.middleware.cors import CORSMiddleware
 
-# Add the project root to sys.path to allow imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from routes import absence, cours, code_ens, input_cours, compare_scheduler, analytics_timeslot
 
 
 @asynccontextmanager
@@ -21,7 +19,7 @@ async def lifespan(app: FastAPI):
     # Startup
     print("🚀 Starting application...")
     try:
-        init_db()
+        initDb()
         print("✅ Database initialized successfully")
     except Exception as e:
         print(f"❌ ERROR: DB Initialization failed: {e}")
@@ -40,8 +38,9 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+
 # Create engine
-engine = create_engine(settings.DATABASE_URL, echo=True)
+engine = create_engine(settings.DATABASEURL, echo=True)
 
 # CORS configuration - Include Tauri app origins
 origins = [
@@ -64,15 +63,11 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(absence.router)
-app.include_router(cours.router)
-app.include_router(code_ens.router)
-app.include_router(input_cours.router)
-app.include_router(analytics_timeslot.router)
-app.include_router(compare_scheduler.router)
+app.include_router(lesson.router)
+app.include_router(analyticsTimeslot.router)
 
 @app.get("/")
-def read_root():
+def readRoot():
     """Root endpoint"""
     return {
         "message": "Scheduler Manager API",
@@ -82,7 +77,7 @@ def read_root():
 
 
 @app.get("/health")
-def health_check():
+def healthCheck():
     """Health check endpoint"""
     return {"status": "healthy"}
 
