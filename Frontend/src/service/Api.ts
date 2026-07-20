@@ -137,5 +137,15 @@ export default {
       method: 'GET',
     });
   },
+  deleteLesson() {
+    return request('/lesson/', {
+      method: 'DELETE',
+    });
+  },
+  deleteTrueLesson() {
+    return request('/lesson/trueLesson', {
+      method: 'DELETE',
+    });
+  },
 };
 

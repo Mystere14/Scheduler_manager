@@ -3,7 +3,7 @@ import { ImportArea } from '../../component/ImportArea/ImportArea';
 import './ValidationPage.css';
 import { SessionList } from '../../feature/SessionList/SessionList';
 import { ValidationContext, type Session } from '../../service/Context';
-
+import api from '../../service/Api';
 
 interface ValidationPage{
 }
@@ -34,13 +34,13 @@ export const ValidationPage = ({}: ValidationPage) => {
             <ImportArea
               title="Créneaux prévus (csv)"
               onDataImported={handleFirstImport}
-              onDataCleared={() => context.setFirstImport(null)}
+              onDataCleared={() => { api.deleteTrueLesson(); }}
               isSchedulerPlanned={true}
             />
             <ImportArea
               title="Créneaux placés (vcs)"
               onDataImported={handleSecondImport}
-              onDataCleared={() => context.setSecondImport(null)}
+              onDataCleared={() => { api.deleteLesson(); }}
               isSchedulerPlanned={false}
             />
           </div>
